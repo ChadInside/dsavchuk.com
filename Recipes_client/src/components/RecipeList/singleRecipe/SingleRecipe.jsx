@@ -15,7 +15,10 @@ const SingleRecipe = ({recipe}) => {
       <div className="recipe__date">isRecipePrivate: {recipe.isPrivate ? "private" : "not private"}</div>
       <NavLink to={`/recipe/${recipe._id}`}>{`recipe id: ${recipe._id}`}</NavLink>
       <p>tags: {recipe.tags.map(tag => `${tag.name}, `)}</p>
-      <p>ingredients: {recipe.ingredients.map(ingredient => `${ingredient.name}: ${ingredient.quantity},  `)}</p>
+      <p>ingredients: {recipe.ingredients && recipe.ingredients.map(ingredient => {
+        if(ingredient != null){
+        return `${ingredient.name}: ${ingredient.quantity},  `}}
+      )}</p>
 
       <button onClick={() => {dispatch(deleteRecipe(recipe._id))}}>
         Delete recipe

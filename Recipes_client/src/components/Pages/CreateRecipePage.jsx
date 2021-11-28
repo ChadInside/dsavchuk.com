@@ -90,7 +90,7 @@ const CreateRecipePage = () => {
           maxSuggestionsLength={10}
           minQueryLength={1}
         />
-
+        {/*// fixme remove duplicate tags and ingredients */}
         <ReactTags
           allowNew
           newTagText='Create new ingredient: '

@@ -9,7 +9,23 @@ class RecipeController {
   async getAllRecipes(req, res) {
     try {
       const recipes = await recipeServices.getAllRecipes()
-      return res.json(recipes)
+
+      const recipesTransformed = recipes.map(recipe => {
+
+        const ingredientsTransform =  recipe.ingredients.map(item => {
+          return {"quantity": item.quantity, "name": item._id.name, "_id": item._id._id}
+        })
+//mongoose returns a Mongoose Object and not a regular JSON
+        const newRecipe = recipe.toObject()
+        newRecipe.ingredients = ingredientsTransform
+        return newRecipe
+      })
+
+      return res.json(recipesTransformed)
+
+
+
+
     } catch (e) {
       console.log(e)
       res.status(500).json({message: "Can't get recipes"})
@@ -22,6 +38,7 @@ class RecipeController {
       const recipeData = {name, instructions, prepTime, cookTime, servings, tags, ingredients}
       const userId = req.user.id
       const recipe = await recipeServices.createRecipe(recipeData, userId)
+      // console.log(recipe)
       await userServices.addRecipeToUser(userId, recipe._id)
       return res.json(recipe)
     } catch (e) {
@@ -34,7 +51,26 @@ class RecipeController {
     try {
       const recipeID = req.params.recipeID
       const recipe = await recipeServices.getRecipeById(recipeID)
-      res.json(recipe)
+
+      // console.log("???????????????????/////////////////////////////////?????????????????????????????????///////////////")
+      // console.log("basic ingredients: ", recipe.ingredients)
+
+      const ingredientsTransform =  recipe.ingredients.map(item => {
+        return {"quantity": item.quantity, "name": item._id.name, "_id": item._id._id}
+      })
+//mongoose returns a Mongoose Object and not a regular JSON
+      const newRecipe = recipe.toObject()
+      newRecipe.ingredients = ingredientsTransform
+
+
+      // console.log("ingredientsTransform: ", ingredientsTransform)
+      // // recipe.ingredients = ingredientsTransform
+      // console.log(recipe.ingredients)
+      // console.log("after transform: ", recipe.ingredients)
+
+      // console.log(newRecipe.ingredients)
+
+      res.json(newRecipe)
     } catch (e) {
       res.status(404).json({message: e.message})
 

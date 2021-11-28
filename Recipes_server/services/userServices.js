@@ -78,7 +78,9 @@ class userServices {
   }
 
   async addRecipeToUser(userId, recipeId){
+    // console.log(recipeId)
     const user = await User.findOneAndUpdate({_id: userId}, {"$push": { recipes: recipeId } }, {new: true})
+    // console.log(user)
     return user
   }
 

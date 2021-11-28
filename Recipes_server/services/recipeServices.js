@@ -6,7 +6,12 @@ const ApiError = require("../exceptions/apiError");
 class recipeServices {
   async getAllRecipes() {
     try {
-      return await Recipe.find().populate('tags', 'name').exec();   // returns "_id" no matter what, but omits everything except "name", if there is anythings else
+      const recipes =  await Recipe.find()
+        .populate('tags', 'name')
+        .populate({path: 'ingredients._id', model: "Ingredient", select: "name"})
+        .exec();   // returns "_id" no matter what, but omits everything except "name", if there is anythings else
+
+      return recipes
     } catch (e) {
       console.log(e)
     }
@@ -17,12 +22,12 @@ class recipeServices {
   async getRecipeById(recipeID) {
     //todo get rid of disgusting _id._id.name for ingredient's name
     try {
-      return await Recipe.findOne({_id: recipeID})
+      const recipe = await Recipe.findOne({_id: recipeID})
         .populate({path: 'ingredients._id', model: "Ingredient", select: "name"})
         .populate('tags', 'name')
-        .exec()
+        .exec();
 
-        ;
+      return recipe
     } catch (e) {
       console.log(e)
       throw e;
@@ -39,7 +44,6 @@ class recipeServices {
   }
 
   async createRecipe(recipe, userId) {
-    console.log(recipe)
     //fixme ugly
     const tags = recipe.tags
     const tagsToCreate = tags.filter(tag => tag.hasOwnProperty('id'))
@@ -60,7 +64,6 @@ class recipeServices {
     const existingIngredients = ingredients.filter(ingredient => ingredient.id !== 0)
     const checkedExistingIngredients = await this.checkExistingIngredients(existingIngredients)
 
-    console.log(checkedExistingIngredients)
 
     const ingredientsFormatted = checkedExistingIngredients.map(item => {
       return {_id: item.id, quantity: item.quantity}
@@ -69,18 +72,10 @@ class recipeServices {
 
     // todo check for duplicates in ingredients
 
-    console.log(ingredientsFormatted)
+
 
 
     delete recipe.ingredients;
-    console.log(recipe.ingredients)
-    console.log(ingredientsFormatted)
-    console.log("last data: ", {
-      ...recipe,
-      tags: [...newTagsToRecipe, ...existingTagsIDs],
-      ingredients: ingredientsFormatted,
-      userId
-    })
 
     const newRecipe = await Recipe.create({
       ...recipe,
@@ -88,9 +83,6 @@ class recipeServices {
       ingredients: ingredientsFormatted,
       userId
     })
-
-
-    throw ApiError.BadRequest();
 
     return newRecipe
   }
