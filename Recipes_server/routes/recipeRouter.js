@@ -15,6 +15,7 @@ router.get('/users/all', authMiddleware, userController.getUsers)
 router.get('/user/:userID', userController.getOneUser)
 
 router.get('/tags', authMiddleware, recipeController.getAllTags)
+router.get('/ingredients', authMiddleware, recipeController.getAllIngredients)
 
 
 router.post('/registration', body('nickname').notEmpty(), body('password').isLength({min: 3, max: 18}), userController.registration)

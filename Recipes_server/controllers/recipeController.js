@@ -21,7 +21,7 @@ class RecipeController {
       const {name, instructions, prepTime, cookTime, servings, tags, ingredients} = req.body
       const recipeData = {name, instructions, prepTime, cookTime, servings, tags, ingredients}
       const userId = req.user.id
-      const recipe = await recipeServices.createRecipe({...recipeData, userId})
+      const recipe = await recipeServices.createRecipe(recipeData, userId)
       await userServices.addRecipeToUser(userId, recipe._id)
       return res.json(recipe)
     } catch (e) {
@@ -61,7 +61,7 @@ class RecipeController {
       const recipeID = req.params.recipeID
 
       const deletedRecipe = await recipeServices.deleteRecipe(recipeID)
-      const user = await userServices.deleteRecipe(deletedRecipe)
+      await userServices.deleteRecipe(deletedRecipe)
 
       res.json(deletedRecipe)
     } catch (e) {
@@ -79,8 +79,15 @@ class RecipeController {
       res.status(500).json({message: "Can't get tags"})
     }
   }
-
-
+  async getAllIngredients(req, res) {
+    try {
+      const ingredients = await recipeServices.getAllIngredients()
+      return res.json(ingredients)
+    } catch (e) {
+      console.log(e)
+      res.status(500).json({message: "Can't get ingredients"})
+    }
+  }
 
 
 }

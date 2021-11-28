@@ -5,7 +5,7 @@ import {addToFavourite, deleteRecipe} from "../../../stores/store";
 import {NavLink} from "react-router-dom";
 
 const SingleRecipe = ({recipe}) => {
-const  dispatch = useDispatch()
+  const dispatch = useDispatch()
   return (
     <div className="recipe">
       <div className="recipe__name">recipe name: {recipe.name}</div>
@@ -14,7 +14,8 @@ const  dispatch = useDispatch()
       <div className="recipe__date">recipe author: {recipe.userId}</div>
       <div className="recipe__date">isRecipePrivate: {recipe.isPrivate ? "private" : "not private"}</div>
       <NavLink to={`/recipe/${recipe._id}`}>{`recipe id: ${recipe._id}`}</NavLink>
-<span>tags: {recipe.tags.map(tag => `${tag.name}, `)}</span>
+      <p>tags: {recipe.tags.map(tag => `${tag.name}, `)}</p>
+      <p>ingredients: {recipe.ingredients.map(ingredient => `${ingredient.name}: ${ingredient.quantity},  `)}</p>
 
       <button onClick={() => {dispatch(deleteRecipe(recipe._id))}}>
         Delete recipe

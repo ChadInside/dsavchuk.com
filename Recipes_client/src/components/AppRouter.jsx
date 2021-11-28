@@ -3,7 +3,7 @@ import {Redirect, Route, Switch} from 'react-router-dom'
 import {Routes} from "../routes";
 import Header from "./Header";
 import {useDispatch} from "react-redux";
-import {checkAuth, logout, test} from "../stores/store";
+import {checkAuth} from "../stores/store";
 
 const AppRouter = () => {
 

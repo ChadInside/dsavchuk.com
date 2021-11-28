@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import RecipeList from "../RecipeList/RecipeList";
 import my_face_when from "../../assets/my_face_when.png";
-import {getCatalog, sendRecipeThunk} from "../../stores/store";
+import {getCatalog} from "../../stores/store";
 import {useDispatch, useSelector} from "react-redux";
 import PostForm from "../small/PostForm";
 

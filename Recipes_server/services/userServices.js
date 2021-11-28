@@ -68,7 +68,7 @@ class userServices {
   }
 
   async getOneUser(userId){
-    const user = await User.findOne({_id: userId}).populate('recipes').populate('favouriteRecipes')
+    const user = await User.findOne({_id: userId}).populate({path: 'recipes', populate: {path: 'tags'}}).populate({path: 'favouriteRecipes', populate: {path: 'tags'}})
     return {_id: user._id, nickname: user.nickname, recipes: user.recipes, favourite: user.favouriteRecipes}
   }
 

@@ -12,10 +12,12 @@ const Recipe = new Schema({
   cookTime: {type: Number, required: true},
   servings: {type: Number, required: true},
 
-  ingredients: [{
-    ingredient: {type: ObjectId, ref: 'Ingredient'},
+  ingredients: [
+    {
+    _id: {type: ObjectId, ref: 'Ingredient'},
     quantity: {type: String, default: ''},
-  }],
+  }
+  ],
 
   tags: [{type: ObjectId, ref: 'Tag'}],
 

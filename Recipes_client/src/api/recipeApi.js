@@ -103,6 +103,11 @@ export const recipeApi = {
       return null
     })
   },
-
+  getSuggestionIngredients() {
+    return instance.get("ingredients/").then(response => {return response}).catch(e => {
+      console.log("api error catch ingredients: ", e?.response);
+      return null
+    })
+  },
 
 }

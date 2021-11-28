@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {getCatalog, getSuggestionTags, sendRecipeThunk, setRedirect} from "../../stores/store";
+import {getSuggestionIngredients, getSuggestionTags, sendRecipeThunk} from "../../stores/store";
 import {useDispatch, useSelector} from "react-redux";
 import {Redirect} from "react-router-dom";
 import ReactTags from "react-tag-autocomplete";
@@ -52,6 +52,7 @@ const CreateRecipePage = () => {
 
   useEffect(() => {
     dispatch(getSuggestionTags())
+    dispatch(getSuggestionIngredients())
   }, []);
 
 
@@ -105,12 +106,12 @@ const CreateRecipePage = () => {
 
         <div>Ingredients:
           <ul>{ingredients.map(ingredient =>
-              <li key={ingredient.name}>{ingredient.name}
-                <input type="text"
-                       placeholder={"Quantity"}
-                       onChange={e => changeQuantityIngredient(e.target.value, ingredient.name)}
-                /></li>
-            )}
+            <li key={ingredient.name}>{ingredient.name}
+              <input type="text"
+                     placeholder={"Quantity"}
+                     onChange={e => changeQuantityIngredient(e.target.value, ingredient.name)}
+              /></li>
+          )}
           </ul>
         </div>
 

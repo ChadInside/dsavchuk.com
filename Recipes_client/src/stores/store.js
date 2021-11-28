@@ -10,6 +10,7 @@ const defaultState = {
   redirectTo: null,
   catalog: [],
   suggestion_tags: [],
+  suggestion_ingredients: [],
 }
 
 const ADD_RECIPE = 'ADD_RECIPE'
@@ -22,7 +23,7 @@ const SET_AUTH = "SET_AUTH"
 const SET_ONE_USER = "SET_ONE_USER"
 const SET_REDIRECT_TO = "SET_REDIRECT_TO"
 const SET_SUGGESTION_TAGS = "SET_SUGGESTION_TAGS"
-
+const SET_SUGGESTION_INGREDIENTS = "SET_SUGGESTION_INGREDIENTS"
 
 
 const rootReducer = (state = defaultState, action) => {
@@ -47,6 +48,8 @@ const rootReducer = (state = defaultState, action) => {
       return {...state, redirectTo: action.payload}
     case SET_SUGGESTION_TAGS:
       return {...state, suggestion_tags: action.payload}
+    case SET_SUGGESTION_INGREDIENTS:
+      return {...state, suggestion_ingredients: action.payload}
     default:
       return state
   }
@@ -64,7 +67,9 @@ export const setUser = (loginUser) => ({type: SET_LOGIN_USER, "payload": loginUs
 export const setUsers = (users) => ({type: SET_USERS, "payload": users})
 export const setOneUser = (user) => ({type: SET_ONE_USER, "payload": user})
 export const setAuth = (isAuth) => ({type: SET_AUTH, "payload": isAuth})
-export const setSuggestionTags = (tags) =>  ({type: SET_SUGGESTION_TAGS, "payload": tags})
+export const setSuggestionTags = (tags) => ({type: SET_SUGGESTION_TAGS, "payload": tags})
+export const setSuggestionIngredients = (ingredients) => ({type: SET_SUGGESTION_INGREDIENTS, "payload": ingredients})
+
 
 export function getRecipe(recipeId) {
   return async dispatch => {
@@ -104,7 +109,7 @@ export function addToFavourite(recipeId) {
   return async dispatch => {
     const response = await recipeApi.addToFavourite(recipeId);
     if (response) {
-    // all good :)
+      // all good :)
     }
   }
 }
@@ -180,11 +185,22 @@ export function getSuggestionTags() {
   return async dispatch => {
     const tags = await recipeApi.getSuggestionTags()
     if (tags) {
-      dispatch(setSuggestionTags(tags.data))
+      const tags_with_ids = tags.data.map(tag => {return {"id": tag._id, "name": tag.name}})
+      dispatch(setSuggestionTags(tags_with_ids))
     }
   }
 }
 
+export function getSuggestionIngredients() {
+  return async dispatch => {
+    const ingredients = await recipeApi.getSuggestionIngredients()
+    if (ingredients) {
+      const ingredients_with_ids = ingredients.data.map(ingredient => {return {"id": ingredient._id, "name": ingredient.name}})
+
+      dispatch(setSuggestionIngredients(ingredients_with_ids))
+    }
+  }
+}
 
 
 export const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))

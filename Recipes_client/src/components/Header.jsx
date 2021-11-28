@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 
 const Header = () => {
   const loginUser = useSelector(state => state.loginUser)
-  const isAuth = useSelector(state => state.isAuth)
+  // const isAuth = useSelector(state => state.isAuth)
 
   return (
     <div className={"Header"}>
