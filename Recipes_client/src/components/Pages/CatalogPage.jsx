@@ -32,6 +32,8 @@ const CatalogPage = () => {
         <input type="text" placeholder="Search" value={searchQ} onChange={handleChange}/>
       </div>
 
+      <div className="searchBar-tags"></div>
+
       <PostForm/>
       <RecipeList recipes={searchResults.length ? searchResults : catalog}/>
     </div>
