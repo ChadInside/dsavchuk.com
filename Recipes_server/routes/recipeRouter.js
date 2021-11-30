@@ -8,6 +8,8 @@ const authMiddleware = require("../middlewares/authMiddleware")
 
 router.get('/all', recipeController.getAllRecipes);
 router.post('/new-recipe', authMiddleware, recipeController.createRecipe)
+router.put('/new-recipe/:recipeID', authMiddleware, recipeController.updateRecipe)
+
 router.get('/recipe/:recipeID',  authMiddleware, recipeController.getRecipe);
 // router.patch('/recipe/:recipeID', recipeController.updateRecipe);
 router.delete('/recipe/:recipeID', authMiddleware, recipeController.deleteRecipe);

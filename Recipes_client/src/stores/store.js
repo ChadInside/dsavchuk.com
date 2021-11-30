@@ -85,9 +85,9 @@ export function getCatalog() {
   }
 }
 
-export function sendRecipeThunk(recipe) {
+export function sendRecipeThunk(recipe, isUpdate) {
   return async dispatch => {
-    const newRecipe = await recipeApi.sendRecipe(recipe)
+    const newRecipe = await recipeApi.sendRecipe(recipe, isUpdate)
     if (newRecipe && newRecipe._id) {
       // dispatch(addRecipe(newRecipe))
       dispatch(setRedirect(`/recipe/${newRecipe._id}`))

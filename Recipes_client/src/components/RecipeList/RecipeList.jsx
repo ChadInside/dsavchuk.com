@@ -2,7 +2,9 @@ import React from 'react';
 import './recipelist.css'
 import SingleRecipe from "./singleRecipe/SingleRecipe";
 
-function RecipeList({recipes =[]}) {
+function RecipeList({recipes = []}) {
+
+  if (recipes.length === 0) return <div>Not found :(</div>
 
   const listRecipes = recipes.map(recipe => <SingleRecipe key={recipe._id} recipe={recipe}/>)
 

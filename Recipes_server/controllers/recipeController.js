@@ -47,6 +47,20 @@ class RecipeController {
     }
   }
 
+  async updateRecipe(req,res){
+    try {
+      const {name, instructions, prepTime, cookTime, servings, tags, ingredients, _id} = req.body
+      const recipeData = {name, instructions, prepTime, cookTime, servings, tags, ingredients, _id}
+      const userId = req.user.id
+      const recipe = await recipeServices.updateRecipe(recipeData, userId)
+
+return res.json(recipe)
+
+    } catch (e) {
+
+    }
+  }
+
   async getRecipe(req, res) {
     try {
       const recipeID = req.params.recipeID

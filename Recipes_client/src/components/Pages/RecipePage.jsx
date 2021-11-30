@@ -33,6 +33,9 @@ const RecipePage = (props) => {
         }}>
           Delete recipe
         </button>
+        <button onClick={()=>{
+          history.push(`/new-recipe/${recipe._id}`)
+        }}>Update recipe</button>
       </div>
 
       }

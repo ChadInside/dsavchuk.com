@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {getSuggestionIngredients, getSuggestionTags, sendRecipeThunk} from "../../stores/store";
+import {getRecipe, getSuggestionIngredients, getSuggestionTags, sendRecipeThunk} from "../../stores/store";
 import {useDispatch, useSelector} from "react-redux";
 import {Redirect} from "react-router-dom";
 import ReactTags from "react-tag-autocomplete";
@@ -10,7 +10,7 @@ import "../../assets/createRecipePage.css"
 //   Directions (1.1213 2.123123 3.123123)
 
 
-const CreateRecipePage = () => {
+const CreateRecipePage = (props) => {
   const dispatch = useDispatch()
   const [name, setName] = useState('');
   const [instructions, setInstructions] = useState('');
@@ -23,6 +23,10 @@ const CreateRecipePage = () => {
   const suggestion_ingredients = useSelector(state => state.suggestion_ingredients)
   const redirectTo = useSelector(state => state.redirectTo)
   const reactTags = useRef()
+  const recipe = useSelector(state => state.recipe)
+
+  const recipeId = props.match.params.id
+  const isUpdate = (recipeId) ? true : false;
 
   //todo reformat to unify tags and ingredients
   const onDeleteTags = useCallback((tagIndex) => {
@@ -49,15 +53,39 @@ const CreateRecipePage = () => {
     setIngredients(ingredientsArray)
   }, [ingredients])
 
+  function getQuantityIngredient(ingredientName) {
+    const ingredientIndex = ingredients.findIndex(item => item.name === ingredientName)
+    return ingredients[ingredientIndex].quantity
+  }
+
 
   useEffect(() => {
     dispatch(getSuggestionTags())
     dispatch(getSuggestionIngredients())
+    dispatch(getRecipe(recipeId))
+    initUpdate()
   }, []);
 
+  useEffect(()=>{
+    initUpdate()
+  },[recipe])
+
+  function initUpdate() {
+    if (recipeId && recipe && recipe._id == recipeId) {
+      setName(recipe.name)
+      setInstructions(recipe.instructions)
+      setPrepTime(recipe.prepTime)
+      setCookTime(recipe.cookTime)
+      setServings(recipe.servings)
+      setIngredients(recipe.ingredients)
+      setTags(recipe.tags)
+    }
+  }
 
   function sendRecipe() {
-    dispatch(sendRecipeThunk({name, instructions, prepTime, cookTime, servings, ingredients, tags}))
+    const recipeData = {name, instructions, prepTime, cookTime, servings, ingredients, tags}
+    if (isUpdate) recipeData._id = recipe._id
+    dispatch(sendRecipeThunk(recipeData, isUpdate))
   }
 
   if (redirectTo) {
@@ -69,7 +97,7 @@ const CreateRecipePage = () => {
 
     <div>
       {redirectTo}
-      create new recipe page
+      {recipeId ? "update recipe" : "create new recipe page"}
       {<div className={"postForm"}>
 
         <input type="text" value={name} placeholder={"Name"} onChange={e => setName(e.target.value)}/>
@@ -90,7 +118,7 @@ const CreateRecipePage = () => {
           maxSuggestionsLength={10}
           minQueryLength={1}
         />
-        {/*// fixme remove duplicate tags and ingredients */}
+        {/*// todo remove duplicate tags and ingredients */}
         <ReactTags
           allowNew
           newTagText='Create new ingredient: '
@@ -109,19 +137,14 @@ const CreateRecipePage = () => {
             <li key={ingredient.name}>{ingredient.name}
               <input type="text"
                      placeholder={"Quantity"}
+                     value={getQuantityIngredient(ingredient.name) || ''}
                      onChange={e => changeQuantityIngredient(e.target.value, ingredient.name)}
               /></li>
           )}
           </ul>
         </div>
 
-
-        // todo autosuggestion of ingredients from total base
-        // todo ingredients list with number of them
-        // do just like with tags but create a ul with ingredient's name and field for quantity of said ingredient
-
-
-        <button onClick={() => {sendRecipe(name, instructions)}}>Отправить</button>
+        <button onClick={() => {sendRecipe()}}>{isUpdate ? "Update" : "Create new"}</button>
       </div>}
     </div>
   );

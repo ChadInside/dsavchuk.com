@@ -48,11 +48,18 @@ export const recipeApi = {
       }
     )
   },
-  sendRecipe(recipe) {
-    return instance.post("new-recipe/", recipe).then(({data}) => {return data}).catch(e => {
-      console.log("api error send : ", e?.response);
-      return null
-    })
+  sendRecipe(recipe, isUpdate) {
+    if (!isUpdate) {
+      return instance.post("new-recipe/", recipe).then(({data}) => {return data}).catch(e => {
+        console.log("api error send : ", e?.response);
+        return null
+      })
+    } else if (isUpdate) {
+      return instance.put("new-recipe/" + recipe["_id"], recipe).then(({data}) => {return data}).catch(e => {
+        console.log("api error send patch : ", e?.response);
+        return null
+      })
+    }
   },
   deleteRecipe(recipeId) {
     return instance.delete("recipe/" + recipeId).then(response => {return response}).catch(e => {

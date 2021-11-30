@@ -1,5 +1,10 @@
+//todo update recipes
+//todo add/remove from favourite (push/pull from redux user.favourite and send api request)
+
 // TODO отдельная страница пользователей
 //  информация о пользователе, его рецепты, его избранные рецепты,
+//   change password
+
 
 //  todo отдельная страница с формой создания рецепта
 //    с возможностью добавлять картинки, список ингридиентов, их количество на определенное количество порций,

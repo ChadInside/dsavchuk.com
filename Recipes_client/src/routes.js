@@ -10,6 +10,7 @@ const RECIPE_PAGE = "/recipe"
 const USER_PAGE = "/user"
 const CREATE_RECIPE_PAGE = "/new-recipe"
 
+
 export const Routes = [
   {
     path: MAIN_PAGE,
@@ -21,6 +22,14 @@ export const Routes = [
   },
   {
     path: CREATE_RECIPE_PAGE,
+    Component: CreateRecipePage
+  },
+  {
+    path: CREATE_RECIPE_PAGE,
+    Component: CreateRecipePage
+  },
+  {
+    path: CREATE_RECIPE_PAGE + '/:id',
     Component: CreateRecipePage
   },
   {
