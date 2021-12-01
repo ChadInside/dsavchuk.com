@@ -125,6 +125,7 @@ export function sendUserRegister(nickname, password) {
   }
 }
 
+
 export function sendUserLogin(nickname, password) {
   return async dispatch => {
     const userData = await recipeApi.sendUserLogin({nickname, password})
@@ -135,6 +136,19 @@ export function sendUserLogin(nickname, password) {
     }
   }
 }
+
+export function sendChangePassword(password, newPassword) {
+  return async dispatch => {
+    const userData = await recipeApi.sendChangePassword({password, newPassword})
+    if (userData) {
+      localStorage.setItem('accessToken', userData.accessToken)
+      dispatch(setAuth(true))
+      dispatch(setUser(userData.loginUser))
+    }
+  }
+}
+
+
 
 export function getUsers() {
   return async dispatch => {

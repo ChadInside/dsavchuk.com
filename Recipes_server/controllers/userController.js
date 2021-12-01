@@ -58,6 +58,19 @@ class UserController {
     }
   }
 
+  async changePassword(req, res, next) {
+    try {
+      const nickname = req.user.nickname
+      const {password, newPassword} = req.body;
+      const userData = await userServices.changePassword(nickname, password, newPassword)
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      return res.json(userData)
+    } catch (e) {
+      next(e);
+    }
+  }
+
+
   async getUsers(req, res, next) {
     try {
       const users = await userServices.getAllUsers();
@@ -70,26 +83,35 @@ class UserController {
   async getOneUser(req, res, next) {
     try {
       const userId = req.params.userID
-      const user = await userServices.getOneUser(userId)
+      const user = await userServices.getUserById(userId)
       return res.json(user)
     } catch (e) {
       next(e)
     }
   }
 
-  async addFavourite(req, res, next) {
+  async changeFavourite(req, res, next) {
     try {
       const userId = req.user.id;
       const recipeID = req.params.recipeID;
 
-      const user = await userServices.getOneUser(userId);
-      const recipe = await recipeServices.getRecipeById(recipeID)
-      if (user || recipe) {
-        await userServices.addFavouriteRecipe(userId, recipeID)
-        await recipeServices.addFavouriteRecipe(userId, recipeID)
+      const user = await userServices.getOneUserBasicInfo(userId);
+      const recipe = await recipeServices.getRecipeById(recipeID);
+
+      const isFavourited = (user.favouriteRecipes.includes(recipe._id) && recipe.favouritedByUsers.includes(user._id))
+      if (user && recipe) {
+        if (isFavourited){
+          await userServices.removeFavouriteRecipe(user._id, recipe._id)
+          await recipeServices.removeFavouriteRecipe(user._id, recipe._id)
+          return res.json("removed from favourite")
+        }
+        await userServices.addFavouriteRecipe(user._id, recipe._id)
+        await recipeServices.addFavouriteRecipe(user._id, recipe._id)
+        //fixme wtf is "OK"?
+        return res.json("added to favourite")
       }
-//fixme wtf is "OK"?
-      return res.json("Ok")
+
+      throw ApiError.BadRequest()
     } catch (e) {
       next(e)
     }

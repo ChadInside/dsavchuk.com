@@ -85,6 +85,13 @@ export const recipeApi = {
       return null
     })
   },
+
+  sendChangePassword(passwords) {
+    return instance.post("change-password/", passwords).then(response => {return response.data}).catch(e => {
+      console.log("api error catch login: ", e?.response);
+      return null
+    })
+  },
   getUsers() {
     return instance.get("users/all").then(response => {return response.data}).catch(e => {
       console.log("api error catch getUsers: ", e?.response);

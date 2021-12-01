@@ -9,7 +9,7 @@ const corsOptions = {
 const mongoose = require("mongoose")
 const errorMiddleware = require("./middlewares/errorMiddleware")
 
-const recipesRouter = require('./routes/recipeRouter');
+const router = require('./routes/Router');
 
 const dbURL = process.env.MONGO_URL || "mongodb://localhost:27017/RecipesDB"
 const PORT = process.env.PORT || 5001
@@ -24,7 +24,7 @@ app.use(express.json({limit: 100000}));
 app.use(cookieParser());
 app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api/recipes', recipesRouter);
+app.use('/api/recipes', router);
 app.use(errorMiddleware)
 
 

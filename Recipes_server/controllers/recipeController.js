@@ -4,6 +4,7 @@ const User = require("../models/User")
 
 const recipeServices = require("../services/recipeServices")
 const userServices = require("../services/userServices")
+const ApiError = require("../exceptions/apiError");
 
 class RecipeController {
   async getAllRecipes(req, res) {
@@ -105,10 +106,13 @@ return res.json(recipe)
 
   async deleteRecipe(req, res) {
     try {
-      // if (!req.user.roles.includes('admin')) {
-      //   throw new ApiError.UnauthorizedError()
-      // }
       const recipeID = req.params.recipeID
+      const recipe = await recipeServices.getRecipeById(recipeID)
+      const isAuthor = (recipe.userId == req.user.id);
+
+      if (!isAuthor && !req.user.roles.includes('admin') ) {
+        throw ApiError.UnauthorizedError()
+      }
 
       const deletedRecipe = await recipeServices.deleteRecipe(recipeID)
       await userServices.deleteRecipe(deletedRecipe)

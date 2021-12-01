@@ -133,6 +133,10 @@ class recipeServices {
     const recipe = await Recipe.findOneAndUpdate({_id: recipeId}, {"$addToSet": {favouritedByUsers: userId}}, {new: true})
     return recipe
   }
+  async removeFavouriteRecipe(userId, recipeId) {
+    const recipe = await Recipe.findOneAndUpdate({_id: recipeId}, {"$pull": {favouritedByUsers: userId}}, {new: true})
+    return recipe
+  }
 
   async getAllTags() {
     try {
