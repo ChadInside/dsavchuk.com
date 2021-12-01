@@ -1,7 +1,4 @@
-const Recipe = require("../models/Recipe")
-const User = require("../models/User")
 const Token = require("../models/Token")
-const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
@@ -26,7 +23,7 @@ class tokenServices {
   }
 
    generateTokens(payload) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '15m'})
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '1h'})
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'})
     return {accessToken, refreshToken}
   }

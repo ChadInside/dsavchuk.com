@@ -24,14 +24,14 @@ class userServices {
   async login(nickname, password) {
     const user = await User.findOne({nickname})
     if (!user) {
-      throw ApiError.BadRequest(`Candidate with nickname ${nickname} doesn't exist`)
+      throw ApiError.BadRequest(`User with nickname ${nickname} doesn't exist`)
     }
     const isPassEquals = await bcrypt.compare(password, user.password)
     if (!isPassEquals) {
       throw ApiError.BadRequest('Password is incorrect')
     }
     const userDto = new UserDto(user);
-    const tokens = await tokenServices.generateTokens({...userDto})
+    const tokens = tokenServices.generateTokens({...userDto})
     await tokenServices.saveToken(userDto.id, tokens.refreshToken)
     return {
       ...tokens, loginUser: userDto
@@ -85,30 +85,29 @@ class userServices {
   }
 
 
-  async getUserById(userId) {
-    const user = await User.findOne({_id: userId}).populate({path: 'recipes', populate: {path: 'tags'}}).populate({
-      path: 'favouriteRecipes',
-      populate: {path: 'tags'}
-    })
+  async getUserByIdPopulated(userId) {
+    const user = await User.findOne({_id: userId})
+      .populate({path: 'recipes', populate: {path: 'tags'}})
+      .populate({
+        path: 'favouriteRecipes',
+        populate: {path: 'tags'}
+      })
     return {_id: user._id, nickname: user.nickname, recipes: user.recipes, favourite: user.favouriteRecipes}
   }
 
-  //fixme very bad
-  //rename or remove entirely
-  async getOneUserBasicInfo(userId) {
+
+  async getUserByIdNotPopulated(userId) {
     const user = await User.findOne({_id: userId})
     return user;
   }
 
   async deleteRecipe(deletedRecipe) {
-    const user = await User.findOneAndUpdate({_id: deletedRecipe.userId}, {$pull: {recipes: deletedRecipe._id}}, {new: true})
+    const user = await User.findOneAndUpdate({_id: deletedRecipe.userId}, {"$pull": {recipes: deletedRecipe._id}}, {new: true})
     return user;
   }
 
   async addRecipeToUser(userId, recipeId) {
-    // console.log(recipeId)
-    const user = await User.findOneAndUpdate({_id: userId}, {"$push": {recipes: recipeId}}, {new: true})
-    // console.log(user)
+    const user = await User.findOneAndUpdate({_id: userId}, {"$addToSet": {recipes: recipeId}}, {new: true})
     return user
   }
 

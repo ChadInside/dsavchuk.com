@@ -17,12 +17,11 @@ class recipeServices {
     }
   }
 
-//.populate('tags', 'name')
-  //.populate({path: 'ingredients.ingredient', model: "Ingredient"}).exec()
-  async getRecipeById(recipeID) {
+
+  async getRecipeById(recipeId) {
     //todo get rid of disgusting _id._id.name for ingredient's name
     try {
-      const recipe = await Recipe.findOne({_id: recipeID})
+      const recipe = await Recipe.findOne({_id: recipeId})
         .populate({path: 'ingredients._id', model: "Ingredient", select: "name"})
         .populate('tags', 'name')
         .exec();
@@ -34,9 +33,9 @@ class recipeServices {
     }
   }
 
-  async deleteRecipe(recipeID) {
+  async deleteRecipe(recipeId) {
     try {
-      const deletedRecipe = await Recipe.findByIdAndRemove(recipeID)
+      const deletedRecipe = await Recipe.findByIdAndRemove(recipeId)
       return deletedRecipe
     } catch (e) {
       console.log(e)
@@ -143,6 +142,7 @@ class recipeServices {
       return await Tag.find();
     } catch (e) {
       console.log(e)
+      throw e;
     }
   }
 

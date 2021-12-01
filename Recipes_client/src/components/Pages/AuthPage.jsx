@@ -35,18 +35,8 @@ const AuthPage = () => {
         <p>Is Auth: {isAuth ? "true" : "false"}</p>
 
 
-
-        <p>{ loginUser !== {} && `${loginUser.nickname}
-          ${loginUser.id} `
-        }</p>
-        <div  style={{wordWrap: "break-word"}}>Access Token: {localStorage.getItem('accessToken')}</div>
         <button onClick={()=>{dispatch(getUsers())}}>Get users</button>
-
-
-
         {users && <UserList users = {users}/>}
-
-
 
       </div>
     </div>

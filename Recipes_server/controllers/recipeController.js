@@ -1,120 +1,66 @@
-const Recipe = require("../models/Recipe")
-
-const User = require("../models/User")
-
 const recipeServices = require("../services/recipeServices")
 const userServices = require("../services/userServices")
 const ApiError = require("../exceptions/apiError");
+const utils = require("../utils/utils")
 
 class RecipeController {
-  async getAllRecipes(req, res) {
+  async getAllRecipes(req, res, next) {
     try {
-      const recipes = await recipeServices.getAllRecipes()
 
-      const recipesTransformed = recipes.map(recipe => {
-
-        const ingredientsTransform =  recipe.ingredients.map(item => {
-          return {"quantity": item.quantity, "name": item._id.name, "_id": item._id._id}
-        })
-//mongoose returns a Mongoose Object and not a regular JSON
-        const newRecipe = recipe.toObject()
-        newRecipe.ingredients = ingredientsTransform
-        return newRecipe
-      })
-
+      const recipesRaw = await recipeServices.getAllRecipes()
+      const recipesTransformed = utils.recipesFormatIngredients(recipesRaw)
       return res.json(recipesTransformed)
-
-
-
-
     } catch (e) {
-      console.log(e)
-      res.status(500).json({message: "Can't get recipes"})
+      return next(ApiError.InternalServerError("Can't get recipes"))
     }
   }
 
-  async createRecipe(req, res) {
+  async createRecipe(req, res, next) {
     try {
-      const {name, instructions, prepTime, cookTime, servings, tags, ingredients} = req.body
-      const recipeData = {name, instructions, prepTime, cookTime, servings, tags, ingredients}
+      const recipeData = utils.getRecipeDataFromReq(req.body)
       const userId = req.user.id
       const recipe = await recipeServices.createRecipe(recipeData, userId)
-      // console.log(recipe)
       await userServices.addRecipeToUser(userId, recipe._id)
       return res.json(recipe)
     } catch (e) {
-      console.log(e)
-      res.status(500).json({message: "Can't create recipe"})
+      return next(ApiError.InternalServerError("Can't create recipe"))
     }
   }
 
-  async updateRecipe(req,res){
+  async updateRecipe(req, res, next) {
     try {
-      const {name, instructions, prepTime, cookTime, servings, tags, ingredients, _id} = req.body
-      const recipeData = {name, instructions, prepTime, cookTime, servings, tags, ingredients, _id}
+      const recipeData = utils.getRecipeDataFromReq(req.body)
       const userId = req.user.id
       const recipe = await recipeServices.updateRecipe(recipeData, userId)
-
-return res.json(recipe)
-
+      return res.json(recipe)
     } catch (e) {
-
+      return next(ApiError.InternalServerError("Can't update recipe"))
     }
   }
 
-  async getRecipe(req, res) {
+  async getRecipe(req, res, next) {
     try {
-      const recipeID = req.params.recipeID
-      const recipe = await recipeServices.getRecipeById(recipeID)
+      const recipeId = req.params.recipeId
+      const recipe = await recipeServices.getRecipeById(recipeId)
 
-      // console.log("???????????????????/////////////////////////////////?????????????????????????????????///////////////")
-      // console.log("basic ingredients: ", recipe.ingredients)
-
-      const ingredientsTransform =  recipe.ingredients.map(item => {
-        return {"quantity": item.quantity, "name": item._id.name, "_id": item._id._id}
-      })
-//mongoose returns a Mongoose Object and not a regular JSON
-      const newRecipe = recipe.toObject()
-      newRecipe.ingredients = ingredientsTransform
-
-
-      // console.log("ingredientsTransform: ", ingredientsTransform)
-      // // recipe.ingredients = ingredientsTransform
-      // console.log(recipe.ingredients)
-      // console.log("after transform: ", recipe.ingredients)
-
-      // console.log(newRecipe.ingredients)
-
-      res.json(newRecipe)
+      const recipeFormat = utils.recipesFormatIngredients(recipe)
+      res.json(recipeFormat)
     } catch (e) {
       res.status(404).json({message: e.message})
-
     }
   }
 
-  // async updateRecipe(req, res) {
-  //   // TODO update to actually update
-  //   try {
-  //     const recipe = req.params.recipeID
-  //     const parentThread = await services.deleteRecipe(recipeID)
-  //     res.json(parentThread)
-  //   } catch (e) {
-  //     res.status(400).json({message: e.message})
-  //   }
-  // }
-
-
-  async deleteRecipe(req, res) {
+  async deleteRecipe(req, res, next) {
     try {
-      const recipeID = req.params.recipeID
-      const recipe = await recipeServices.getRecipeById(recipeID)
+      const recipeId = req.params.recipeId
+      const recipe = await recipeServices.getRecipeById(recipeId)
       const isAuthor = (recipe.userId == req.user.id);
 
-      if (!isAuthor && !req.user.roles.includes('admin') ) {
+      if (!isAuthor && !req.user.roles.includes('admin')) {
         throw ApiError.UnauthorizedError()
       }
 
-      const deletedRecipe = await recipeServices.deleteRecipe(recipeID)
+      const deletedRecipe = await recipeServices.deleteRecipe(recipeId)
       await userServices.deleteRecipe(deletedRecipe)
 
       res.json(deletedRecipe)
@@ -124,22 +70,21 @@ return res.json(recipe)
   }
 
 
-  async getAllTags(req, res) {
+  async getAllTags(req, res, next) {
     try {
       const tags = await recipeServices.getAllTags()
       return res.json(tags)
     } catch (e) {
-      console.log(e)
-      res.status(500).json({message: "Can't get tags"})
+      return next(ApiError.InternalServerError("Can't get tags"))
     }
   }
-  async getAllIngredients(req, res) {
+
+  async getAllIngredients(req, res, next) {
     try {
       const ingredients = await recipeServices.getAllIngredients()
       return res.json(ingredients)
     } catch (e) {
-      console.log(e)
-      res.status(500).json({message: "Can't get ingredients"})
+      return next(ApiError.InternalServerError("Can't get ingredients"))
     }
   }
 

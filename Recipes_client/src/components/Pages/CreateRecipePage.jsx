@@ -21,8 +21,9 @@ const CreateRecipePage = (props) => {
   const [tags, setTags] = useState([])
   const suggestion_tags = useSelector(state => state.suggestion_tags)
   const suggestion_ingredients = useSelector(state => state.suggestion_ingredients)
-  const redirectTo = useSelector(state => state.redirectTo)
   const reactTags = useRef()
+  const redirectTo = useSelector(state => state.redirectTo)
+
   const recipe = useSelector(state => state.recipe)
 
   const recipeId = props.match.params.id
@@ -44,7 +45,6 @@ const CreateRecipePage = (props) => {
   }, [ingredients])
 
   const changeQuantityIngredient = useCallback((quantityValue, ingredientName) => {
-    // fixme why so ugly?
     const newIngredientIndex = ingredients.findIndex(item => item.name === ingredientName)
     const newIngredient = ingredients[newIngredientIndex]
     newIngredient.quantity = quantityValue
@@ -62,8 +62,10 @@ const CreateRecipePage = (props) => {
   useEffect(() => {
     dispatch(getSuggestionTags())
     dispatch(getSuggestionIngredients())
-    dispatch(getRecipe(recipeId))
-    initUpdate()
+    if(isUpdate){
+      dispatch(getRecipe(recipeId))
+      initUpdate()
+    }
   }, []);
 
   useEffect(()=>{

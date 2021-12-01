@@ -8,18 +8,18 @@ const authMiddleware = require("../middlewares/authMiddleware")
 
 router.get('/all', recipeController.getAllRecipes);
 router.post('/new-recipe', authMiddleware, recipeController.createRecipe)
-router.put('/new-recipe/:recipeID', authMiddleware, recipeController.updateRecipe)
-router.get('/recipe/:recipeID',  authMiddleware, recipeController.getRecipe);
-router.delete('/recipe/:recipeID', authMiddleware, recipeController.deleteRecipe);
+router.put('/new-recipe/:recipeId', authMiddleware, recipeController.updateRecipe)
+router.get('/recipe/:recipeId',  authMiddleware, recipeController.getRecipe);
+router.delete('/recipe/:recipeId', authMiddleware, recipeController.deleteRecipe);
 
 router.get('/tags', authMiddleware, recipeController.getAllTags)
 router.get('/ingredients', authMiddleware, recipeController.getAllIngredients)
 
-router.post('/recipe/favourite/:recipeID',authMiddleware, userController.changeFavourite)
+router.post('/recipe/favourite/:recipeId',authMiddleware, userController.changeFavourite)
 
 //should be in userRouter
 router.get('/users/all', authMiddleware, userController.getUsers)
-router.get('/user/:userID', userController.getOneUser)
+router.get('/user/:userId', userController.getOneUser)
 router.post('/registration', body('nickname').notEmpty(), body('password').isLength({min: 3, max: 18}), userController.registration)
 router.post('/login', userController.login)
 router.post('/logout', userController.logout)
