@@ -10,32 +10,32 @@ const CatalogPage = () => {
   const catalog = useSelector(state => state.catalog)
   const [searchQ, setSearchQ] = useState('');
   const [searchResults, setSearchResults] = useState([])
-  const [ingredients, setIngredients] = useState([]);
-  const [tags, setTags] = useState([])
-  const suggestion_tags = useSelector(state => state.suggestion_tags)
-  const suggestion_ingredients = useSelector(state => state.suggestion_ingredients)
-  const reactTags = useRef()
+  // const [ingredients, setIngredients] = useState([]);
+  // const [tags, setTags] = useState([])
+  // const suggestion_tags = useSelector(state => state.suggestion_tags)
+  // const suggestion_ingredients = useSelector(state => state.suggestion_ingredients)
+  // const reactTags = useRef()
 
   useEffect(() => {
     dispatch(getCatalog())
-    dispatch(getSuggestionTags())
-    dispatch(getSuggestionIngredients())
+    // dispatch(getSuggestionTags())
+    // dispatch(getSuggestionIngredients())
   }, []);
 
   //todo reformat to unify tags and ingredients
-  const onDeleteTags = useCallback((tagIndex) => {
-    setTags(tags.filter((_, i) => i !== tagIndex))
-  }, [tags])
-  const onAdditionTags = useCallback((newTag) => {
-    setTags([...tags, newTag])
-  }, [tags])
-
-  const onDeleteIngredients = useCallback((ingredientIndex) => {
-    setIngredients(ingredients.filter((_, i) => i !== ingredientIndex))
-  }, [ingredients])
-  const onAdditionIngredients = useCallback((newIngredient) => {
-    setIngredients([...ingredients, newIngredient])
-  }, [ingredients])
+  // const onDeleteTags = useCallback((tagIndex) => {
+  //   setTags(tags.filter((_, i) => i !== tagIndex))
+  // }, [tags])
+  // const onAdditionTags = useCallback((newTag) => {
+  //   setTags([...tags, newTag])
+  // }, [tags])
+  //
+  // const onDeleteIngredients = useCallback((ingredientIndex) => {
+  //   setIngredients(ingredients.filter((_, i) => i !== ingredientIndex))
+  // }, [ingredients])
+  // const onAdditionIngredients = useCallback((newIngredient) => {
+  //   setIngredients([...ingredients, newIngredient])
+  // }, [ingredients])
 
 
   function search(recipe, searchTerms) {
@@ -60,18 +60,16 @@ const CatalogPage = () => {
 
   useEffect(() => {
       const searchTerms = searchQ.split(',').map(item => item.trim().toLowerCase())
-    const tagsTerms = tags.map(item => item.name)
-    const ingredientsTerms = ingredients.map(item => item.name)
-    // console.log("searchTerms", searchTerms)
-    // console.log("tagsTerms", tagsTerms)
-    // console.log("ingredientsTerms", ingredientsTerms)
-    const finalTerms = searchTerms.concat(tagsTerms,ingredientsTerms)
+    // const tagsTerms = tags.map(item => item.name)
+    // const ingredientsTerms = ingredients.map(item => item.name)
+
+    // const finalTerms = searchTerms.concat(tagsTerms,ingredientsTerms)
     // const final2 = finalTerms.filter(item =>  item != '')
     const result = catalog.filter(recipe => {
-      return search(recipe, finalTerms)  // final2
+      return search(recipe, searchTerms)  // final2
     })
     setSearchResults(result)
-  }, [searchQ, tags, ingredients])
+  }, [searchQ])
 
 
   return (
@@ -81,31 +79,31 @@ const CatalogPage = () => {
         <input type="text" placeholder="Search (name, tags, ingredients)" value={searchQ} onChange={e => {setSearchQ(e.target.value)}}/>
       </div>
 
-      <div className="searchBar-tags">
-        <ReactTags
-          newTagText='Create new tag: '
-          ref={reactTags}
-          tags={tags}
-          onDelete={onDeleteTags}
-          onAddition={onAdditionTags}
-          suggestions={suggestion_tags}
-          maxSuggestionsLength={10}
-          minQueryLength={1}
-        />
+      {/*<div className="searchBar-tags">*/}
+      {/*  <ReactTags*/}
+      {/*    newTagText='Create new tag: '*/}
+      {/*    ref={reactTags}*/}
+      {/*    tags={tags}*/}
+      {/*    onDelete={onDeleteTags}*/}
+      {/*    onAddition={onAdditionTags}*/}
+      {/*    suggestions={suggestion_tags}*/}
+      {/*    maxSuggestionsLength={10}*/}
+      {/*    minQueryLength={1}*/}
+      {/*  />*/}
         {/*// todo remove duplicate tags and ingredients */}
-        <ReactTags
-          newTagText='Create new ingredient: '
-          ref={reactTags}
-          tags={ingredients}
-          onDelete={onDeleteIngredients}
-          onAddition={onAdditionIngredients}
-          suggestions={suggestion_ingredients}
-          maxSuggestionsLength={10}
-          minQueryLength={1}
-          placeholderText='Add new ingredients'
-        />
+      {/*  <ReactTags*/}
+      {/*    newTagText='Create new ingredient: '*/}
+      {/*    ref={reactTags}*/}
+      {/*    tags={ingredients}*/}
+      {/*    onDelete={onDeleteIngredients}*/}
+      {/*    onAddition={onAdditionIngredients}*/}
+      {/*    suggestions={suggestion_ingredients}*/}
+      {/*    maxSuggestionsLength={10}*/}
+      {/*    minQueryLength={1}*/}
+      {/*    placeholderText='Add new ingredients'*/}
+      {/*  />*/}
 
-      </div>
+      {/*</div>*/}
 
 
 

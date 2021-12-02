@@ -12,7 +12,11 @@ class userServices {
       throw ApiError.BadRequest(`Candidate with nickname ${nickname} already exists`)
     }
     const hashPassword = await bcrypt.hash(password, 3)
-    const user = await User.create({nickname, password: hashPassword})
+    // fixme hardcoded admin creation
+    const roles =[]
+    if (nickname === 'admin') roles.push('admin')
+    //
+    const user = await User.create({nickname, password: hashPassword, roles})
     const userDto = new UserDto(user)
     const tokens = tokenServices.generateTokens({...userDto})
     await tokenServices.saveToken(userDto.id, tokens.refreshToken)
