@@ -1,53 +1,51 @@
-const Token = require("../models/Token")
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+const jwt = require('jsonwebtoken');
+const Token = require('../models/Token');
+require('dotenv').config();
 
-class tokenServices {
-
+class TokenServices {
   validateAccessToken(token) {
     try {
-      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
-      return userData
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+      return userData;
     } catch (e) {
-      return null
+      return null;
     }
   }
 
   validateRefreshToken(token) {
     try {
-      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
-      return userData
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+      return userData;
     } catch (e) {
-      return null
+      return null;
     }
   }
 
-   generateTokens(payload) {
-    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '1h'})
-    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'})
-    return {accessToken, refreshToken}
+  generateTokens(payload) {
+    const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+    return { accessToken, refreshToken };
   }
-
 
   async saveToken(userId, refreshToken) {
-    const tokenData = await Token.findOne({user: userId})
+    const tokenData = await Token.findOne({ user: userId });
     if (tokenData) {
-      const updateToken = await Token.findOneAndUpdate({user: userId}, {$set: {refreshToken: refreshToken}})
+      const updateToken = await
+      Token.findOneAndUpdate({ user: userId }, { $set: { refreshToken } });
       return updateToken;
     }
-    const token = await Token.create({user: userId, refreshToken})
+    return Token.create({ user: userId, refreshToken });
   }
 
   async removeToken(refreshToken) {
-    const tokenData = await Token.findOneAndDelete({refreshToken})
+    const tokenData = await Token.findOneAndDelete({ refreshToken });
     return tokenData;
   }
 
   async findToken(refreshToken) {
-    const tokenData = await Token.findOne({refreshToken})
+    const tokenData = await Token.findOne({ refreshToken });
     return tokenData;
   }
-
 }
 
-module.exports = new tokenServices();
+module.exports = new TokenServices();

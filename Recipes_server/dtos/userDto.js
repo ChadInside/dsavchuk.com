@@ -1,6 +1,8 @@
 module.exports = class UserDto {
   nickname;
+
   id;
+
   roles;
 
   constructor(model) {
@@ -8,6 +10,4 @@ module.exports = class UserDto {
     this.id = model._id;
     this.roles = model.roles;
   }
-
-
-}
+};
