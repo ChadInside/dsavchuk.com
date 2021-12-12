@@ -1,6 +1,6 @@
 # dsavchuk.com
-MERN CRUD
-Express, React, redux, redux-thunk, axios
+MERN CRUD +
+redux, redux-thunk, axios
 
 client: npm start
 server: npm run dev
