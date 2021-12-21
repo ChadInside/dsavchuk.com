@@ -21,6 +21,7 @@ class RecipeController {
       const recipe = await recipeServices.createRecipe(recipeData, userId);
       // eslint-disable-next-line no-underscore-dangle
       await userServices.addRecipeToUser(userId, recipe._id);
+      return next(ApiError.InternalServerError("recipe created but for development purposes"));
       return res.json(recipe);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't create recipe"));
