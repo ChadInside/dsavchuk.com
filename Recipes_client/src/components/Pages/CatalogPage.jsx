@@ -1,25 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import RecipeList from "../RecipeList/RecipeList";
 import my_face_when from "../../assets/my_face_when.png";
-import {getCatalog, getSuggestionIngredients, getSuggestionTags} from "../../stores/store";
+import {getCatalog} from "../../stores/store";
 import {useDispatch, useSelector} from "react-redux";
-import ReactTags from "react-tag-autocomplete";
 
 const CatalogPage = () => {
   const dispatch = useDispatch()
   const catalog = useSelector(state => state.catalog)
   const [searchQ, setSearchQ] = useState('');
   const [searchResults, setSearchResults] = useState([])
-  // const [ingredients, setIngredients] = useState([]);
-  // const [tags, setTags] = useState([])
-  // const suggestion_tags = useSelector(state => state.suggestion_tags)
-  // const suggestion_ingredients = useSelector(state => state.suggestion_ingredients)
-  // const reactTags = useRef()
+
 
   useEffect(() => {
     dispatch(getCatalog())
-    // dispatch(getSuggestionTags())
-    // dispatch(getSuggestionIngredients())
   }, []);
 
   //todo reformat to unify tags and ingredients

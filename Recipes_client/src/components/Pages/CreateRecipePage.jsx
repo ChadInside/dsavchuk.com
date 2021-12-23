@@ -27,7 +27,7 @@ const CreateRecipePage = (props) => {
   const recipe = useSelector(state => state.recipe)
 
   const recipeId = props.match.params.id
-  const isUpdate = (recipeId) ? true : false;
+  const isUpdate = !!(recipeId); //(recipeId) ? true : false
 
   //todo reformat to unify tags and ingredients
   const onDeleteTags = useCallback((tagIndex) => {
@@ -87,6 +87,7 @@ const CreateRecipePage = (props) => {
   function sendRecipe() {
     const recipeData = {name, instructions, prepTime, cookTime, servings, ingredients, tags}
     if (isUpdate) recipeData._id = recipe._id
+    console.log(recipeData)
     dispatch(sendRecipeThunk(recipeData, isUpdate))
   }
 

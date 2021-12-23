@@ -1,7 +1,10 @@
+// noinspection JSCheckFunctionSignatures
+
 const jwt = require('jsonwebtoken');
 const Token = require('../models/Token');
 require('dotenv').config();
 
+// noinspection JSCheckFunctionSignatures
 class TokenServices {
   validateAccessToken(token) {
     try {

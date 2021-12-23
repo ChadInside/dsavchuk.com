@@ -18,3 +18,8 @@
 
 // cleanup client
 //
+
+
+//Known bugs:
+// creating new recipe -> client sends all tags/ings with "id"s, but when updating send existing tags/ings with "id"s and not existing with "_id"s
+// solved on server with mapping "_id"s to "id"

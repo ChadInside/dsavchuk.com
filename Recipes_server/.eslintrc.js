@@ -17,5 +17,6 @@ module.exports = {
     'no-console': [0],
     'no-prototype-builtins': [0],
     'no-param-reassign': [0],
+    'no-useless-return' : [0],
   },
 };

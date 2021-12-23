@@ -1,12 +1,13 @@
 const Recipe = require('../models/Recipe');
 const Tag = require('../models/Tag');
 const Ingredient = require('../models/Ingredient');
+const utils = require('../utils/utils');
 
 class RecipeServices {
   async getAllRecipes() {
     try {
       return await Recipe.find()
-        // returns "_id" no matter what, omits everything except "name", if there is anythings else
+        // returns "_id" no matter what, omits everything except "name", if there is anything else
         .populate('tags', 'name')
         .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
         .exec();
@@ -37,9 +38,10 @@ class RecipeServices {
   }
 
   async createRecipe(recipe, userId) {
-    const { tags, ingredients } = recipe;
-    const tagsFinal = await this.findExistingCreateNewTags(tags);
-    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredients);
+    const {tagsFormattedId, ingredientsFormattedId} = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients)
+
+    const tagsFinal = await this.findExistingCreateNewTags(tagsFormattedId);
+    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredientsFormattedId);
 
     return Recipe.create({
       ...recipe,
@@ -50,11 +52,9 @@ class RecipeServices {
   }
 
   async updateRecipe(recipe, userId) {
-    const { tags, ingredients } = recipe;
-    const tagsFinal = await this.findExistingCreateNewTags(tags);
-    console.log('tagsFinal ', tagsFinal);
-    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredients);
-    console.log('ingredientsFinal', ingredientsFinal);
+    const {tagsFormattedId, ingredientsFormattedId} = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients)
+    const tagsFinal = await this.findExistingCreateNewTags(tagsFormattedId);
+    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredientsFormattedId);
     delete recipe.ingredients;
     return Recipe.findByIdAndUpdate(recipe._id, {
       ...recipe,
@@ -98,19 +98,7 @@ class RecipeServices {
     }
   }
 
-  async searchExistingTags(existingTagsNames) {
-    try {
-      // todo add more check or do more optimally using native api without mapping calls to DB
-      console.log('existingTagsNames', existingTagsNames);
-      const ids = existingTagsNames.map((tag) => Tag.findOne({ _id: tag.id }).exec());
-      const idsEval = await Promise.all(ids);
-      const finalExistingTags = idsEval.map((tag) => tag.id);
-      console.log('finalExistingTags ', finalExistingTags);
-      return finalExistingTags;
-    } catch (e) {
-      console.log(e);
-    }
-  }
+
 
   async getAllIngredients() {
     try {
@@ -120,51 +108,19 @@ class RecipeServices {
     }
   }
 
-  async addIngredients_saveQuantity(ingredients) {
-    try {
-      // todo validation if tag already exists
-      // fixme changes global ingredients variable by permanently changing each ingredient-object
-      const newIngredients = await Ingredient.insertMany(ingredients);
-      ingredients.forEach((ingredient, index) => { ingredient.id = newIngredients[index]._id; });
-      return ingredients;
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
-  async checkExistingIngredients(existingIngredients) {
-    try {
-      // todo add more check or do more optimally using native api without mapping call to DB
-      // const ids = existingIngredientsNames
-      // .map(ingredient => Ingredient.findOne({"_id": ingredient.id}).exec())
-      // const idsEval = await Promise.all(ids)
 
-      // return idsEval.map(ingredient => ingredient._id)
-      return existingIngredients.filter(async (ingredient) => {
-        const ingredientFromDB = await Ingredient.findById({ _id: ingredient.id }).exec();
-        // eslint-disable-next-line eqeqeq
-        if (ingredient.id == ingredientFromDB._id && ingredient.name && ingredientFromDB.name) {
-          return true;
-        }
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
+
 
   async findExistingCreateNewTags(tags) {
     const tagsUniqueQuery = this.checkDuplicatesLocalTags(tags);
-    console.log('tagsUniqueQuery', tagsUniqueQuery);
     const tagsUniqueDb = await this.checkDuplicatesDbTags(tagsUniqueQuery);
-    console.log('tagsUniqueDb ', tagsUniqueDb);
     return tagsUniqueDb;
   }
 
   async findExistingCreateNewIngredients(ingredients) {
     const ingredientsUniqueQuery = this.checkDuplicatesLocalIngredients(ingredients);
-    console.log('ingredientsUniqueQuery ', ingredientsUniqueQuery);
     const ingredientsUniqueDb = await this.checkDuplicatesDbIngredients(ingredientsUniqueQuery);
-    console.log(ingredientsUniqueDb);
     return ingredientsUniqueDb;
   }
 
@@ -215,21 +171,6 @@ class RecipeServices {
       { _id: ing._id, quantity: ingredients.find((i) => i.name === ing.name).quantity }
     ));
   }
-
-  // async findExistingCreateNewIngredients(ingredients) {
-  //   const ingredientsToCreate = ingredients.filter((ingredient) => ingredient.id === 0);
-  //
-  //   // changes ingredients variable for some reason
-  //   const newIngredients = await this.addIngredients_saveQuantity(ingredientsToCreate);
-  //
-  //   const existingIngredients = ingredients.filter((ingredient) => ingredient.id !== 0);
-  //   const checkedExistingIngredients = await this.checkExistingIngredients(existingIngredients);
-  //
-  //   const ingredientsFormatted = checkedExistingIngredients
-  //     .map((item) => ({ _id: item.id, quantity: item.quantity }));
-  //
-  //   return ingredientsFormatted;
-  // }
 }
 
 module.exports = new RecipeServices();

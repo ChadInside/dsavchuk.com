@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getOneUser, sendChangePassword, sendUserRegister} from "../../stores/store";
+import {getOneUser, sendChangePassword} from "../../stores/store";
 import RecipeList from "../RecipeList/RecipeList";
 
 const UserPage = (props) => {

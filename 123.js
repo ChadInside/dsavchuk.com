@@ -521,27 +521,27 @@
 // isPal('abcba')
 // isPal('abcda')
 
-function fizzbuzz() {
-
-  for (let i = 0; i < 100; i++) {
-
-    if (!(i % 3) && !(i % 5)) {
-      console.log('fizzbuzz ', i);
-      continue
-    }
-
-
-    if (!(i % 5)) {
-      console.log('buzz ', i);
-      continue
-    }
-
-
-    if (!(i % 3)) {
-      console.log('fizz ', i);
-      continue
-    }
-  }
-}
-
-fizzbuzz()
+// function fizzbuzz() {
+//
+//   for (let i = 0; i < 100; i++) {
+//
+//     if (!(i % 3) && !(i % 5)) {
+//       console.log('fizzbuzz ', i);
+//       continue
+//     }
+//
+//
+//     if (!(i % 5)) {
+//       console.log('buzz ', i);
+//       continue
+//     }
+//
+//
+//     if (!(i % 3)) {
+//       console.log('fizz ', i);
+//       continue
+//     }
+//   }
+// }
+//
+// fizzbuzz()

@@ -7,9 +7,7 @@ class RecipeController {
   async getAllRecipes(req, res, next) {
     try {
       const recipesRaw = await recipeServices.getAllRecipes();
-      // console.log(recipesRaw);
       const recipesTransformed = utils.recipesFormatIngredients(recipesRaw);
-      console.log(recipesTransformed);
       return res.json(recipesTransformed);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't get recipes"));
@@ -56,7 +54,7 @@ class RecipeController {
     try {
       const { recipeId } = req.params;
       const recipe = await recipeServices.getRecipeById(recipeId);
-      // eslint-disable-next-line eqeqeq
+
       const isAuthor = (recipe.userId == req.user.id);
 
       if (!isAuthor && !req.user.roles.includes('admin')) {

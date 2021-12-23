@@ -16,6 +16,6 @@ function RecipeList({recipes = []}) {
 
     </div>
   );
-};
+}
 
 export default RecipeList;
