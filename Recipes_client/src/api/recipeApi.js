@@ -37,7 +37,7 @@ instance.interceptors.response.use(config => {
 
 export const recipeApi = {
   getCatalog() {
-    return instance.get("all/").then(({data}) => {return data})
+    return instance.get("all/").then(({data}) => data)
   },
   getRecipe(recipeId) {
     return instance.get("recipe/" + recipeId).then(response => {
@@ -50,75 +50,75 @@ export const recipeApi = {
   },
   sendRecipe(recipe, isUpdate) {
     if (!isUpdate) {
-      return instance.post("new-recipe/", recipe).then(({data}) => {return data}).catch(e => {
+      return instance.post("new-recipe/", recipe).then(({data}) => data).catch(e => {
         console.log("api error send : ", e?.response);
         return null
       })
     } else if (isUpdate) {
-      return instance.put("new-recipe/" + recipe["_id"], recipe).then(({data}) => {return data}).catch(e => {
+      return instance.put("new-recipe/" + recipe["_id"], recipe).then(({data}) => data).catch(e => {
         console.log("api error send patch : ", e?.response);
         return null
       })
     }
   },
   deleteRecipe(recipeId) {
-    return instance.delete("recipe/" + recipeId).then(response => {return response}).catch(e => {
+    return instance.delete("recipe/" + recipeId).then(response => response).catch(e => {
       console.log("api error catch delete: ", e?.response);
       return null
     })
   },
   addToFavourite(recipeId) {
-    return instance.post("recipe/favourite/" + recipeId).then(response => {return response}).catch(e => {
+    return instance.post("recipe/favourite/" + recipeId).then(response => response).catch(e => {
       console.log("api error catch favourite: ", e?.response);
       return null
     })
   },
   sendUserRegister(user) {
-    return instance.post("registration/", user).then(response => {return response.data}).catch(e => {
+    return instance.post("registration/", user).then(response => response.data).catch(e => {
       console.log("api error catch register: ", e?.response);
       return null
     })
   },
   sendUserLogin(user) {
-    return instance.post("login/", user).then(response => {return response.data}).catch(e => {
+    return instance.post("login/", user).then(response => response.data).catch(e => {
       console.log("api error catch login: ", e?.response);
       return null
     })
   },
 
   sendChangePassword(passwords) {
-    return instance.post("change-password/", passwords).then(response => {return response.data}).catch(e => {
+    return instance.post("change-password/", passwords).then(response => response.data).catch(e => {
       console.log("api error catch login: ", e?.response);
       return null
     })
   },
   getUsers() {
-    return instance.get("users/all").then(response => {return response.data}).catch(e => {
+    return instance.get("users/all").then(response => response.data).catch(e => {
       console.log("api error catch getUsers: ", e?.response);
       // return null
       throw e
     })
   },
   getOneUser(userId) {
-    return instance.get("user/" + userId).then(response => {return response.data}).catch(e => {
+    return instance.get("user/" + userId).then(response =>  response.data).catch(e => {
       console.log("api error catch getOneUser: ", e?.response);
       return null
     })
   },
   logout() {
-    return instance.post("logout/").then(response => {return response}).catch(e => {
+    return instance.post("logout/").then(response =>  response).catch(e => {
       console.log("api error catch logout: ", e?.response);
       return null
     })
   },
   getSuggestionTags() {
-    return instance.get("tags/").then(response => {return response}).catch(e => {
+    return instance.get("tags/").then(response =>  response).catch(e => {
       console.log("api error catch tags: ", e?.response);
       return null
     })
   },
   getSuggestionIngredients() {
-    return instance.get("ingredients/").then(response => {return response}).catch(e => {
+    return instance.get("ingredients/").then(response =>  response).catch(e => {
       console.log("api error catch ingredients: ", e?.response);
       return null
     })

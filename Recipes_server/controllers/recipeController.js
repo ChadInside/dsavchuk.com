@@ -7,7 +7,9 @@ class RecipeController {
   async getAllRecipes(req, res, next) {
     try {
       const recipesRaw = await recipeServices.getAllRecipes();
+      // console.log(recipesRaw);
       const recipesTransformed = utils.recipesFormatIngredients(recipesRaw);
+      console.log(recipesTransformed);
       return res.json(recipesTransformed);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't get recipes"));
@@ -21,7 +23,6 @@ class RecipeController {
       const recipe = await recipeServices.createRecipe(recipeData, userId);
       // eslint-disable-next-line no-underscore-dangle
       await userServices.addRecipeToUser(userId, recipe._id);
-      return next(ApiError.InternalServerError("recipe created but for development purposes"));
       return res.json(recipe);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't create recipe"));
