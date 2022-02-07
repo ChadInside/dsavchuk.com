@@ -7,9 +7,12 @@ class RecipeController {
   async getAllRecipes(req, res, next) {
     try {
       const recipesRaw = await recipeServices.getAllRecipes();
+      // console.log('recipesRaw ', recipesRaw);
       const recipesTransformed = utils.recipesFormatIngredients(recipesRaw);
+      // console.log('recipesTransformed: ', recipesTransformed);
       return res.json(recipesTransformed);
     } catch (e) {
+      console.log(e);
       return next(ApiError.InternalServerError("Can't get recipes"));
     }
   }
@@ -19,7 +22,6 @@ class RecipeController {
       const recipeData = utils.getRecipeDataFromReq(req.body);
       const userId = req.user.id;
       const recipe = await recipeServices.createRecipe(recipeData, userId);
-      // eslint-disable-next-line no-underscore-dangle
       await userServices.addRecipeToUser(userId, recipe._id);
       return res.json(recipe);
     } catch (e) {

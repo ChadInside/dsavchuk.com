@@ -38,28 +38,30 @@ class RecipeServices {
   }
 
   async createRecipe(recipe, userId) {
-    const {tagsFormattedId, ingredientsFormattedId} = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients)
-
-    const tagsFinal = await this.findExistingCreateNewTags(tagsFormattedId);
-    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredientsFormattedId);
+    const { tags, ingredients } = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients);
+    const tagsValidated = this.validateTags(tags);
+    const tagsUniqueNew = await this.findUniqueNewTags(tagsValidated);
+    const ingredientsValidated = this.validateIngredients(ingredients);
+    const ingredientsUniqueNew = await this.findUniqueNewIngredients(ingredientsValidated);
 
     return Recipe.create({
       ...recipe,
-      tags: tagsFinal,
-      ingredients: ingredientsFinal,
+      tags: tagsUniqueNew,
+      ingredients: ingredientsUniqueNew,
       userId,
     });
   }
 
   async updateRecipe(recipe, userId) {
-    const {tagsFormattedId, ingredientsFormattedId} = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients)
-    const tagsFinal = await this.findExistingCreateNewTags(tagsFormattedId);
-    const ingredientsFinal = await this.findExistingCreateNewIngredients(ingredientsFormattedId);
+    // eslint-disable-next-line max-len
+    const { tags, ingredients } = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients);
+    const tagsUniqueNew = await this.findUniqueNewTags(tags);
+    const ingredientsUniqueNew = await this.findUniqueNewIngredients(ingredients);
     delete recipe.ingredients;
     return Recipe.findByIdAndUpdate(recipe._id, {
       ...recipe,
-      tags: tagsFinal,
-      ingredients: ingredientsFinal,
+      tags: tagsUniqueNew,
+      ingredients: ingredientsUniqueNew,
       userId,
     }, { returnDocument: 'after' });
   }
@@ -98,8 +100,6 @@ class RecipeServices {
     }
   }
 
-
-
   async getAllIngredients() {
     try {
       return await Ingredient.find();
@@ -108,17 +108,13 @@ class RecipeServices {
     }
   }
 
-
-
-
-
-  async findExistingCreateNewTags(tags) {
+  async findUniqueNewTags(tags) {
     const tagsUniqueQuery = this.checkDuplicatesLocalTags(tags);
     const tagsUniqueDb = await this.checkDuplicatesDbTags(tagsUniqueQuery);
     return tagsUniqueDb;
   }
 
-  async findExistingCreateNewIngredients(ingredients) {
+  async findUniqueNewIngredients(ingredients) {
     const ingredientsUniqueQuery = this.checkDuplicatesLocalIngredients(ingredients);
     const ingredientsUniqueDb = await this.checkDuplicatesDbIngredients(ingredientsUniqueQuery);
     return ingredientsUniqueDb;
@@ -170,6 +166,12 @@ class RecipeServices {
     return promisedIngredients.map((ing) => (
       { _id: ing._id, quantity: ingredients.find((i) => i.name === ing.name).quantity }
     ));
+  }
+
+  validateTags(tags) {
+    return tags.filter((tag) => {
+
+    });
   }
 }
 

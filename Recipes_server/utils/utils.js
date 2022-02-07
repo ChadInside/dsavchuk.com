@@ -2,18 +2,18 @@ class Utils {
   recipesFormatIngredients(recipes) {
     if (Array.isArray(recipes)) {
       return recipes.map((recipe) => {
-        const ingredientsTransform = recipe.ingredients
-          .map((item) => ({quantity: item.quantity, name: item._id.name, _id: item._id._id}));
-
+        const ingredientsTransform = recipe.ingredients.map((ingredient) => ({
+          quantity: ingredient.quantity, name: ingredient._id.name, _id: ingredient._id._id,
+        }));
         // mongoose returns a Mongoose Object and not a regular JSON
         const newRecipe = recipe.toObject();
         newRecipe.ingredients = ingredientsTransform;
         return newRecipe;
       });
     }
-    // recipes variable but in reality only one recipe
+
     const ingredientsTransform = recipes.ingredients
-      .map((item) => ({quantity: item.quantity, name: item._id.name, _id: item._id._id}));
+      .map((item) => ({ quantity: item.quantity, name: item._id.name, _id: item._id._id }));
     const newRecipe = recipes.toObject();
     newRecipe.ingredients = ingredientsTransform;
     return newRecipe;
@@ -23,35 +23,29 @@ class Utils {
     const {
       name, instructions, prepTime, cookTime, servings, tags, ingredients,
     } = reqBody;
-    const recipe = {name, instructions, prepTime, cookTime, servings, tags, ingredients}
-    if (reqBody._id) {recipe._id = reqBody._id}
+    const recipe = {
+      name, instructions, prepTime, cookTime, servings, tags, ingredients,
+    };
+    if (reqBody._id) { recipe._id = reqBody._id; }
     return recipe;
   }
 
   formatTagIngredientsIds(tags, ingredients) {
     try {
-      const tagsFormattedId = tags.map(tag => {
+      const tagsFormattedId = tags.map((tag) => (tag.hasOwnProperty('id')
+        ? tag
+        : { id: tag._id, name: tag.name }));
 
-        return tag.hasOwnProperty("id")
-          ? tag
-          : {id: tag._id, name: tag.name}
-      })
+      const ingredientsFormattedId = ingredients.map((ing) => (ing.hasOwnProperty('id')
+        ? ing
+        : { id: ing._id, name: ing.name, quantity: ing.quantity }));
 
-      const ingredientsFormattedId = ingredients.map(ing => {
-
-        return ing.hasOwnProperty("id")
-          ? ing
-          : {"id": ing._id, name: ing.name, quantity: ing.quantity}
-      })
-
-      return {tagsFormattedId, ingredientsFormattedId}
+      return { tags: tagsFormattedId, ingredients: ingredientsFormattedId };
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-// tags & ingredients should be received with "id" field instead of "_id"
-
+    // tags & ingredients should be received with "id" field instead of "_id"
   }
-
 }
 
 module.exports = new Utils();
