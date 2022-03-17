@@ -11,7 +11,7 @@ const corsOptions = {
 const mongoose = require('mongoose');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
-const router = require('./routes/Router');
+const router = require('./routes/router');
 
 const dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/RecipesDB';
 const PORT = process.env.PORT || 5001;

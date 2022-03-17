@@ -11,7 +11,7 @@ class Utils {
         return newRecipe;
       });
     }
-
+    // if single recipe
     const ingredientsTransform = recipes.ingredients
       .map((item) => ({ quantity: item.quantity, name: item._id.name, _id: item._id._id }));
     const newRecipe = recipes.toObject();

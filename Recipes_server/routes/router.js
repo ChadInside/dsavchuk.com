@@ -13,7 +13,10 @@ router.get('/recipe/:recipeId', authMiddleware, recipeController.getRecipe);
 router.delete('/recipe/:recipeId', authMiddleware, recipeController.deleteRecipe);
 
 router.get('/tags', authMiddleware, recipeController.getAllTags);
+router.delete('/tags/:tagId', authMiddleware, recipeController.deleteTag);
+
 router.get('/ingredients', authMiddleware, recipeController.getAllIngredients);
+router.delete('/ingredients/:ingredientId', authMiddleware, recipeController.deleteIngredient);
 
 router.post('/recipe/favourite/:recipeId', authMiddleware, userController.changeFavourite);
 

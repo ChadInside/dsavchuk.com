@@ -3,6 +3,8 @@ const User = require('../models/User');
 const tokenServices = require('./tokenServices');
 const UserDto = require('../dtos/userDto');
 const ApiError = require('../exceptions/apiError');
+const Recipe = require('../models/Recipe');
+const utils = require('../utils/utils');
 
 class UserServices {
   async registration(nickname, password) {
@@ -88,16 +90,20 @@ class UserServices {
 
   async getUserByIdPopulated(userId) {
     const user = await User.findOne({ _id: userId })
-      .populate({ path: 'recipes', populate: { path: 'tags' } })
+      .populate({
+        path: 'recipes',
+        populate: [{ path: 'tags' }, { path: 'ingredients._id', model: 'Ingredient', select: 'name' }],
+      })
       .populate({
         path: 'favouriteRecipes',
-        populate: { path: 'tags' },
+        populate: [{ path: 'tags' }, { path: 'ingredients._id', model: 'Ingredient', select: 'name' }],
       });
+
     return {
       _id: user._id,
       nickname: user.nickname,
-      recipes: user.recipes,
-      favourite: user.favouriteRecipes,
+      recipes: utils.recipesFormatIngredients(user.recipes),
+      favourite: utils.recipesFormatIngredients(user.favouriteRecipes),
     };
   }
 
@@ -140,6 +146,31 @@ class UserServices {
       { new: true },
     );
     return user;
+  }
+
+  async getRecipesByUserId(userId) {
+    try {
+      return await Recipe.find({ userId })
+        .populate('tags', 'name')
+        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
+        .exec();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getFavouriteRecipesByUserId(userId) {
+    try {
+      console.log(userId);
+      return await Recipe.find({ favouritedByUsers: { $in: [userId] } })
+        .populate('tags', 'name')
+        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
+        .exec();
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 }
 

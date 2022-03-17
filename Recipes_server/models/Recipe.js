@@ -6,7 +6,6 @@ const Recipe = new Schema({
   date: { type: Date, default: Date.now },
   instructions: { type: String, required: true },
   userId: { type: ObjectId, ref: 'User', required: true }, // rename to "author"
-  isPrivate: { type: Boolean, default: false },
   favouritedByUsers: [{ type: ObjectId, ref: 'User', default: [] }],
   prepTime: { type: Number, required: true },
   cookTime: { type: Number, required: true },
@@ -14,7 +13,7 @@ const Recipe = new Schema({
 
   ingredients: [
     {
-      _id: { type: ObjectId, ref: 'Ingredient' },
+      _id: { type: ObjectId, ref: 'Ingredient' }, // rename _id to ingredient or ingredientId
       quantity: { type: String, default: '' },
     },
   ],

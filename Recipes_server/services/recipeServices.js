@@ -17,11 +17,10 @@ class RecipeServices {
   }
 
   async getRecipeById(recipeId) {
-    // todo get rid of disgusting _id._id.name for ingredient's name
     try {
-      return await Recipe.findOne({ _id: recipeId })
-        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
+      return await Recipe.findById(recipeId)
         .populate('tags', 'name')
+        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
         .exec();
     } catch (e) {
       console.log(e);
@@ -82,15 +81,6 @@ class RecipeServices {
     );
   }
 
-  async getAllTags() {
-    try {
-      return await Tag.find();
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-
   async addTags(tags) {
     try {
       // todo validation if tag already exists
@@ -136,8 +126,7 @@ class RecipeServices {
         ? await Tag.findOne({ name: tag.name })
         : await Tag.findById(tag.id);
       if (foundTag) return foundTag;
-      // eslint-disable-next-line no-return-await
-      return await Tag.create(tag);
+      return Tag.create(tag);
     });
     const promisedTags = await Promise.all(newTags);
     return promisedTags.map((tag) => ({ _id: tag._id }));
@@ -159,7 +148,6 @@ class RecipeServices {
         ? await Ingredient.findOne({ name: ingredient.name })
         : await Ingredient.findById(ingredient.id);
       if (foundIngredient) return foundIngredient;
-      // eslint-disable-next-line no-return-await
       return await Ingredient.create(ingredient);
     });
     const promisedIngredients = await Promise.all(newIngredients);
@@ -169,9 +157,11 @@ class RecipeServices {
   }
 
   validateTags(tags) {
-    return tags.filter((tag) => {
+    return tags.filter((tag) => tag);
+  }
 
-    });
+  validateIngredients(ingredients) {
+    return ingredients.filter((ingredient) => ingredient);
   }
 }
 

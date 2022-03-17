@@ -2,6 +2,7 @@ const recipeServices = require('../services/recipeServices');
 const userServices = require('../services/userServices');
 const ApiError = require('../exceptions/apiError');
 const utils = require('../utils/utils');
+const tagServices = require('../services/tagServices');
 
 class RecipeController {
   async getAllRecipes(req, res, next) {
@@ -25,6 +26,7 @@ class RecipeController {
       await userServices.addRecipeToUser(userId, recipe._id);
       return res.json(recipe);
     } catch (e) {
+      console.log(e);
       return next(ApiError.InternalServerError("Can't create recipe"));
     }
   }
@@ -57,6 +59,7 @@ class RecipeController {
       const { recipeId } = req.params;
       const recipe = await recipeServices.getRecipeById(recipeId);
 
+      // eslint-disable-next-line eqeqeq
       const isAuthor = (recipe.userId == req.user.id);
 
       if (!isAuthor && !req.user.roles.includes('admin')) {
@@ -72,9 +75,23 @@ class RecipeController {
     }
   }
 
+  async deleteTag(req, res, next) {
+    try {
+      const { tagId } = req.params;
+      const deletedTag = await tagServices.deleteTag(tagId);
+
+      // const deletedRecipe = await recipeServices.deleteRecipe(recipeId);
+      // await userServices.deleteRecipe(deletedRecipe);
+
+      return res.json(deletedTag);
+    } catch (e) {
+      return next(e);
+    }
+  }
+
   async getAllTags(req, res, next) {
     try {
-      const tags = await recipeServices.getAllTags();
+      const tags = await tagServices.getAllTags();
       return res.json(tags);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't get tags"));
@@ -85,6 +102,16 @@ class RecipeController {
     try {
       const ingredients = await recipeServices.getAllIngredients();
       return res.json(ingredients);
+    } catch (e) {
+      return next(ApiError.InternalServerError("Can't get ingredients"));
+    }
+  }
+
+  async deleteIngredient(req, res, next) {
+    try {
+      const { ingredientId } = req.params;
+      const ingredient = await recipeServices.deleteIngredient(ingredientId);
+      return res.json(ingredient);
     } catch (e) {
       return next(ApiError.InternalServerError("Can't get ingredients"));
     }

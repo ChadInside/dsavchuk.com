@@ -4,7 +4,7 @@ import {useDispatch} from "react-redux";
 import {addToFavourite, deleteRecipe} from "../../../stores/store";
 import {NavLink} from "react-router-dom";
 
-const SingleRecipe = ({recipe}) => {
+const SingleFullRecipe = ({recipe}) => {
   const dispatch = useDispatch()
   return (
     <div className="recipe">
@@ -12,12 +12,11 @@ const SingleRecipe = ({recipe}) => {
       <div className="recipe__instructions">recipe instructions: {recipe.instructions}</div>
       <div className="recipe__date">{recipe.date}</div>
       <div className="recipe__date">recipe author: {recipe.userId}</div>
-      <div className="recipe__date">isRecipePrivate: {recipe.isPrivate ? "private" : "not private"}</div>
       <NavLink to={`/recipe/${recipe._id}`}>{`recipe id: ${recipe._id}`}</NavLink>
       <p>tags: {recipe.tags.map(tag => `${tag.name}, `)}</p>
       <p>ingredients: {recipe.ingredients && recipe.ingredients.map(ingredient => {
         if(ingredient != null){
-        return `${ingredient.name}: ${ingredient.quantity},  `}}
+        return `${ingredient.name}: ${ingredient.quantity},  `} return 'null ingredient'}
       )}</p>
 
       <button onClick={() => {dispatch(deleteRecipe(recipe._id))}}>
@@ -30,4 +29,4 @@ const SingleRecipe = ({recipe}) => {
   );
 };
 
-export default SingleRecipe;
+export default SingleFullRecipe;
