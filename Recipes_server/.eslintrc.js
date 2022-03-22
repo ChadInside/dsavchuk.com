@@ -22,6 +22,7 @@ module.exports = {
     'no-useless-return': [0],
     'max-len': [0],
     'no-return-await': [0],
+    'no-plusplus': [0],
 
   },
 };

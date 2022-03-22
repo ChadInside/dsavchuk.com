@@ -2,6 +2,7 @@ const Recipe = require('../models/Recipe');
 const Tag = require('../models/Tag');
 const Ingredient = require('../models/Ingredient');
 const utils = require('../utils/utils');
+const tagServices = require('./tagServices');
 
 class RecipeServices {
   async getAllRecipes() {
@@ -9,8 +10,7 @@ class RecipeServices {
       return await Recipe.find()
         // returns "_id" no matter what, omits everything except "name", if there is anything else
         .populate('tags', 'name')
-        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
-        .exec();
+        .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' }).exec();
     } catch (e) {
       console.log(e);
     }
@@ -52,7 +52,6 @@ class RecipeServices {
   }
 
   async updateRecipe(recipe, userId) {
-    // eslint-disable-next-line max-len
     const { tags, ingredients } = utils.formatTagIngredientsIds(recipe.tags, recipe.ingredients);
     const tagsUniqueNew = await this.findUniqueNewTags(tags);
     const ingredientsUniqueNew = await this.findUniqueNewIngredients(ingredients);
@@ -162,6 +161,47 @@ class RecipeServices {
 
   validateIngredients(ingredients) {
     return ingredients.filter((ingredient) => ingredient);
+  }
+
+  async deleteIngredient(ingredientId) {
+    try {
+      await Recipe.updateMany({
+        $pull: {
+          ingredients: { _id: { _id: ingredientId } },
+        },
+      });
+      return await Ingredient.findByIdAndDelete(ingredientId);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+
+  async getTagsIngredientsFull() {
+    try {
+      const tags = await Tag.find().lean();
+      const ingredients = await Ingredient.find().lean();
+
+      const recipesByTagPromise = tags.map((tag) => Recipe.find({
+        tags: tag._id,
+      }));
+      const recipesByTag = await Promise.all(recipesByTagPromise);
+      for (let i = 0; i < tags.length; i++) {
+        tags[i] = { ...tags[i], recipes: recipesByTag[i] };
+      }
+
+      const ingredientsByTagPromise = ingredients.map((ing) => Recipe.find({ 'ingredients._id': ing._id }));
+      const ingredientsByTag = await Promise.all(ingredientsByTagPromise);
+
+      for (let i = 0; i < ingredients.length; i++) {
+        ingredients[i] = { ...ingredients[i], recipes: ingredientsByTag[i] };
+      }
+
+      return { tags, ingredients };
+    } catch (e) {
+      console.log(e);
+      throw (e);
+    }
   }
 }
 

@@ -3,12 +3,14 @@ import RecipePage from "./components/Pages/RecipePage";
 import AuthPage from "./components/Pages/AuthPage";
 import UserPage from "./components/Pages/UserPage";
 import CreateRecipePage from "./components/Pages/CreateRecipePage";
+import TagsIngredientsPage from "./components/Pages/TagsIngredientsPage";
 
 const MAIN_PAGE = "/"
 const AUTH_PAGE = "/auth"
 const RECIPE_PAGE = "/recipe"
 const USER_PAGE = "/user"
 const CREATE_RECIPE_PAGE = "/new-recipe"
+const TAGS_INGREDIENTS_PAGE = "/tags-ingredients"
 
 
 export const Routes = [
@@ -21,8 +23,8 @@ export const Routes = [
     Component: AuthPage
   },
   {
-    path: CREATE_RECIPE_PAGE,
-    Component: CreateRecipePage
+    path: TAGS_INGREDIENTS_PAGE,
+    Component: TagsIngredientsPage
   },
   {
     path: CREATE_RECIPE_PAGE,

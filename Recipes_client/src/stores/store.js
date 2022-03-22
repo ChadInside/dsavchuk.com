@@ -11,6 +11,9 @@ const defaultState = {
   catalog: [],
   suggestion_tags: [],
   suggestion_ingredients: [],
+  tagsFull: [],
+  ingredientsFull: []
+
 }
 
 const ADD_RECIPE = 'ADD_RECIPE'
@@ -24,6 +27,10 @@ const SET_ONE_USER = "SET_ONE_USER"
 const SET_REDIRECT_TO = "SET_REDIRECT_TO"
 const SET_SUGGESTION_TAGS = "SET_SUGGESTION_TAGS"
 const SET_SUGGESTION_INGREDIENTS = "SET_SUGGESTION_INGREDIENTS"
+const SET_TAGS_FULL = "SET_TAGS_FULL"
+const SET_INGREDIENTS_FULL = "SET_INGREDIENTS_FULL"
+const DELETE_INGREDIENT_FULL = "DELETE_INGREDIENT_FULL"
+const DELETE_TAG_FULL = "DELETE_TAG_FULL"
 
 
 const rootReducer = (state = defaultState, action) => {
@@ -50,6 +57,20 @@ const rootReducer = (state = defaultState, action) => {
       return {...state, suggestion_tags: action.payload}
     case SET_SUGGESTION_INGREDIENTS:
       return {...state, suggestion_ingredients: action.payload}
+    case SET_TAGS_FULL:
+      return {...state, tagsFull: action.payload}
+    case SET_INGREDIENTS_FULL:
+      return {...state, ingredientsFull: action.payload}
+    case DELETE_INGREDIENT_FULL:
+      return {
+        ...state,
+        ingredientsFull: state.ingredientsFull.filter(ing => ing._id !== action.payload._id)
+      }
+    case DELETE_TAG_FULL:
+      return {
+        ...state,
+        tagsFull: state.tagsFull.filter(tag => tag._id !== action.payload._id)
+      }
     default:
       return state
   }
@@ -69,7 +90,12 @@ export const setOneUser = (user) => ({type: SET_ONE_USER, "payload": user})
 export const setAuth = (isAuth) => ({type: SET_AUTH, "payload": isAuth})
 export const setSuggestionTags = (tags) => ({type: SET_SUGGESTION_TAGS, "payload": tags})
 export const setSuggestionIngredients = (ingredients) => ({type: SET_SUGGESTION_INGREDIENTS, "payload": ingredients})
+export const setTagsFull = (tagsFull) => ({type: SET_TAGS_FULL, "payload": tagsFull})
+export const setIngredientsFull = (ingredientsFull) => ({type: SET_INGREDIENTS_FULL, "payload": ingredientsFull})
 
+
+export const deleteIngredientAction = (ingredient) => ({type: DELETE_INGREDIENT_FULL, "payload": ingredient})
+export const deleteTagAction = (tag) => ({type: DELETE_TAG_FULL, "payload": tag})
 
 export function getRecipe(recipeId) {
   return async dispatch => {
@@ -105,7 +131,28 @@ export function deleteRecipe(recipe) {
   }
 }
 
+export function deleteIngredient(ingredient) {
+  return async dispatch => {
+    const response = await recipeApi.deleteIngredient(ingredient);
+    if (response) {
+      const {data: deletedIngredient} = response;
+      dispatch(deleteIngredientAction(deletedIngredient))
+    }
+  }
+}
+
+export function deleteTag(tag) {
+  return async dispatch => {
+    const response = await recipeApi.deleteTag(tag);
+    if (response) {
+      const {data: deletedTag} = response;
+      dispatch(deleteTagAction(deletedTag))
+    }
+  }
+}
+
 export function addToFavourite(recipeId) {
+  //TODO CHANGE "FAVOURITED BY" AND CHANGE "ADD TO FAVOURITE" BUTTON TEXT
   return async dispatch => {
     const response = await recipeApi.addToFavourite(recipeId);
     if (response) {
@@ -147,8 +194,6 @@ export function sendChangePassword(password, newPassword) {
     }
   }
 }
-
-
 
 export function getUsers() {
   return async dispatch => {
@@ -209,9 +254,22 @@ export function getSuggestionIngredients() {
   return async dispatch => {
     const ingredients = await recipeApi.getSuggestionIngredients()
     if (ingredients) {
-      const ingredients_with_ids = ingredients.data.map(ingredient => {return {"id": ingredient._id, "name": ingredient.name}})
-
+      const ingredients_with_ids = ingredients.data.map(ingredient => ({
+          "id": ingredient._id,
+          "name": ingredient.name
+        })
+      )
       dispatch(setSuggestionIngredients(ingredients_with_ids))
+    }
+  }
+}
+
+export function getTagsIngredientsFull() {
+  return async dispatch => {
+    const {tags: tagsFull, ingredients: ingredientsFull} = await recipeApi.getTagsIngredientsFull()
+    if (tagsFull && ingredientsFull) {
+      dispatch(setTagsFull(tagsFull))
+      dispatch(setIngredientsFull(ingredientsFull))
     }
   }
 }

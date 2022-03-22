@@ -62,15 +62,15 @@ const CreateRecipePage = (props) => {
   useEffect(() => {
     dispatch(getSuggestionTags())
     dispatch(getSuggestionIngredients())
-    if(isUpdate){
+    if (isUpdate) {
       dispatch(getRecipe(recipeId))
       initUpdate()
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     initUpdate()
-  },[recipe])
+  }, [recipe])
 
   function initUpdate() {
     if (recipeId && recipe && recipe._id == recipeId) {
@@ -95,20 +95,21 @@ const CreateRecipePage = (props) => {
     return <Redirect to={redirectTo}/>
   }
 
-
   return (
-
     <div>
       {redirectTo}
       {recipeId ? "update recipe" : "create new recipe page"}
       {<div className={"postForm"}>
 
-        <input type="text" value={name} placeholder={"Name"} onChange={e => setName(e.target.value)}/>
-        <input type="text" value={instructions} placeholder={"Instructions"} onChange={e => setInstructions(e.target.value)}/>
+        <input type="text" size="50" value={name} placeholder={"Name"} onChange={e => setName(e.target.value)}/>
+        <textarea  rows="10" cols="30" value={instructions} placeholder={"Instructions"}
+          onChange={e => setInstructions(e.target.value)}/>
 
-        <input type="number" value={prepTime} placeholder={"Preparation time"} onChange={e => setPrepTime(e.target.value)}/>
+        <input type="number" value={prepTime} placeholder={"Preparation time"}
+          onChange={e => setPrepTime(e.target.value)}/>
         <input type="number" value={cookTime} placeholder={"Cooking time"} onChange={e => setCookTime(e.target.value)}/>
-        <input type="number" value={servings} placeholder={"Number of servings"} onChange={e => setServings(e.target.value)}/>
+        <input type="number" value={servings} placeholder={"Number of servings"}
+          onChange={e => setServings(e.target.value)}/>
 
         <ReactTags
           allowNew
@@ -121,6 +122,8 @@ const CreateRecipePage = (props) => {
           maxSuggestionsLength={10}
           minQueryLength={1}
         />
+        <br/>
+        <br/>
         {/*// todo remove duplicate tags and ingredients */}
         <ReactTags
           allowNew
@@ -139,9 +142,9 @@ const CreateRecipePage = (props) => {
           <ul>{ingredients.map(ingredient =>
             <li key={ingredient.name}>{ingredient.name}
               <input type="text"
-                     placeholder={"Quantity"}
-                     value={getQuantityIngredient(ingredient.name) || ''}
-                     onChange={e => changeQuantityIngredient(e.target.value, ingredient.name)}
+                placeholder={"Quantity"}
+                value={getQuantityIngredient(ingredient.name) || ''}
+                onChange={e => changeQuantityIngredient(e.target.value, ingredient.name)}
               /></li>
           )}
           </ul>

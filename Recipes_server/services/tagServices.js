@@ -1,4 +1,5 @@
 const Tag = require('../models/Tag');
+const Recipe = require('../models/Recipe');
 
 class TagServices {
   async getAllTags() {
@@ -13,9 +14,6 @@ class TagServices {
   async getTagById(tagId) {
     try {
       return await Tag.findById(tagId);
-      // .populate('tags', 'name')
-      // .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
-      // .exec();
     } catch (e) {
       console.log(e);
       throw e;
@@ -24,14 +22,18 @@ class TagServices {
 
   async deleteTag(tagId) {
     try {
-      return await Tag.findByIdAndDelete(tagId);
-      // .populate('tags', 'name')
-      // .populate({ path: 'ingredients._id', model: 'Ingredient', select: 'name' })
-      // .exec();
+      await Recipe.updateMany({}, {
+        $pull: {
+          tags: tagId,
+        },
+      });
+
+      return await Tag.findByIdAndRemove(tagId);
     } catch (e) {
       console.log(e);
       throw e;
     }
   }
 }
+
 module.exports = new TagServices();

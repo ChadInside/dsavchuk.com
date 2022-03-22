@@ -18,6 +18,8 @@ router.delete('/tags/:tagId', authMiddleware, recipeController.deleteTag);
 router.get('/ingredients', authMiddleware, recipeController.getAllIngredients);
 router.delete('/ingredients/:ingredientId', authMiddleware, recipeController.deleteIngredient);
 
+router.get('/tags-ingredients-full', authMiddleware, recipeController.getTagsIngredientsFull);
+
 router.post('/recipe/favourite/:recipeId', authMiddleware, userController.changeFavourite);
 
 // should be in userRouter

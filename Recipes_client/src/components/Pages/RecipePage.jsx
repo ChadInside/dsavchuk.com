@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {deleteRecipe, getRecipe, setRedirect} from "../../stores/store";
 import {useHistory} from "react-router-dom";
+import parse from 'html-react-parser';
 
 const RecipePage = (props) => {
   const recipeId = props.match.params.id
@@ -23,7 +24,7 @@ const RecipePage = (props) => {
     <div className="RecipePage">
       {recipe && <div>
         <div className="recipe__name">{recipe.name}</div>
-        <div className="recipe__instructions">{recipe.instructions}</div>
+        <div className="recipe__instructions" style={{whiteSpace: 'pre-wrap'}}>Instructions: {recipe.instructions}</div>
         <div className="recipe__date">{recipe.date}</div>
         <p>tags: {recipe.tags.map(tag => `${tag.name}, `)}</p>
         <p>ingredients: {recipe.ingredients.map(ingredient => `${ingredient.name}: ${ingredient.quantity},  `)}</p>

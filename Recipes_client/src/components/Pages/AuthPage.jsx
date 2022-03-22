@@ -27,15 +27,18 @@ const AuthPage = () => {
     <div className={"Auth"}>
       AUTH
       <div className={"postForm"}>
-        <input type="text" value={nickname} placeholder={"nickname"} onChange={e => setNickname(e.target.value)}/>
-        <input type="text" value={password} placeholder={"password"} onChange={e => setPassword(e.target.value)}/>
-        {!isAuth && <button onClick={() => {sendRegister(nickname, password)}}>Регистрация</button>}
-        <button onClick={() => {sendLogin(nickname, password)}}>Логин</button>
+        {!isAuth && <><input type="text" value={nickname} placeholder={"nickname"}
+          onChange={e => setNickname(e.target.value)}/>
+          <input type="text" value={password} placeholder={"password"}
+            onChange={e => setPassword(e.target.value)}/>
+          {!isAuth && <button onClick={() => {sendRegister(nickname, password)}}>Регистрация</button>}
+          <button onClick={() => {sendLogin(nickname, password)}}>Логин</button>
+        </>}
         {isAuth && <button onClick={() => {dispatch(logout())}}>Logout</button>}
         <p>Is Auth: {isAuth ? "true" : "false"}</p>
 
-        {isAuth && <button onClick={() => {dispatch(getUsers())}}>Get users</button>}
-        {isAuth && users && <UserList users={users}/>}
+        {/*{isAuth && <button onClick={() => {dispatch(getUsers())}}>Get users</button>}*/}
+        {/*{isAuth && users && <UserList users={users}/>}*/}
 
       </div>
     </div>

@@ -6,4 +6,13 @@ const Ingredient = new Schema({
 
 });
 
+Ingredient.pre('remove', () => {
+  // Remove all the docs that refers
+  this.model('Recipe').updateMany({
+    $pullAll: {
+      ingredients: { _id: { _id: this._id } },
+    },
+  });
+});
+
 module.exports = model('Ingredient', Ingredient);

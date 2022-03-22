@@ -14,7 +14,7 @@
 
 // cleanup client
 
-// todo creating new recipe check for empty ingredients
+// todo creating new recipe check for empty ingredients & tags
 
 
 //Known bugs:

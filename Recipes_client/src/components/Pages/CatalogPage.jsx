@@ -46,13 +46,13 @@ const CatalogPage = () => {
   //fixme rename this
   function searchResultsOrCatalog() {
     if (searchQ.length === 0) return catalog;
-    if (!searchQ.length && !searchResults.length) return catalog
+    if (!searchQ.length && !searchResults.length) return catalog;
     if (searchQ.length > 0) return searchResults;
   }
 
 
   useEffect(() => {
-      const searchTerms = searchQ.split(',').map(item => item.trim().toLowerCase())
+    const searchTerms = searchQ.split(',').map(item => item.trim().toLowerCase())
     // const tagsTerms = tags.map(item => item.name)
     // const ingredientsTerms = ingredients.map(item => item.name)
 
@@ -69,37 +69,9 @@ const CatalogPage = () => {
     <div className={"Catalog"}>
       <img src={my_face_when} alt="my_face_when.png"/>
       <div className="searchBar">
-        <input type="text" placeholder="Search (name, tags, ingredients)" value={searchQ} onChange={e => {setSearchQ(e.target.value)}}/>
+        <input type="text" placeholder="Search (name, tags, ingredients)" value={searchQ}
+          onChange={e => {setSearchQ(e.target.value)}}/>
       </div>
-
-      {/*<div className="searchBar-tags">*/}
-      {/*  <ReactTags*/}
-      {/*    newTagText='Create new tag: '*/}
-      {/*    ref={reactTags}*/}
-      {/*    tags={tags}*/}
-      {/*    onDelete={onDeleteTags}*/}
-      {/*    onAddition={onAdditionTags}*/}
-      {/*    suggestions={suggestion_tags}*/}
-      {/*    maxSuggestionsLength={10}*/}
-      {/*    minQueryLength={1}*/}
-      {/*  />*/}
-        {/*// todo remove duplicate tags and ingredients */}
-      {/*  <ReactTags*/}
-      {/*    newTagText='Create new ingredient: '*/}
-      {/*    ref={reactTags}*/}
-      {/*    tags={ingredients}*/}
-      {/*    onDelete={onDeleteIngredients}*/}
-      {/*    onAddition={onAdditionIngredients}*/}
-      {/*    suggestions={suggestion_ingredients}*/}
-      {/*    maxSuggestionsLength={10}*/}
-      {/*    minQueryLength={1}*/}
-      {/*    placeholderText='Add new ingredients'*/}
-      {/*  />*/}
-
-      {/*</div>*/}
-
-
-
 
       <RecipeList recipes={searchResultsOrCatalog()}/>
 

@@ -67,6 +67,21 @@ export const recipeApi = {
       return null
     })
   },
+    deleteIngredient(ingredientId) {
+    return instance.delete("ingredients/" + ingredientId).then(response => response).catch(e => {
+      console.log("api error catch delete: ", e?.response);
+      return null
+    })
+  },
+    deleteTag(tagId) {
+    return instance.delete("tags/" + tagId).then(response => response).catch(e => {
+      console.log("api error catch delete: ", e?.response);
+      return null
+    })
+  },
+
+
+
   addToFavourite(recipeId) {
     return instance.post("recipe/favourite/" + recipeId).then(response => response).catch(e => {
       console.log("api error catch favourite: ", e?.response);
@@ -120,6 +135,12 @@ export const recipeApi = {
   getSuggestionIngredients() {
     return instance.get("ingredients/").then(response =>  response).catch(e => {
       console.log("api error catch ingredients: ", e?.response);
+      return null
+    })
+  },
+  getTagsIngredientsFull() {
+    return instance.get("tags-ingredients-full/").then(response =>  response.data).catch(e => {
+      console.log("api error catch tags-ingredients-full: ", e?.response);
       return null
     })
   },

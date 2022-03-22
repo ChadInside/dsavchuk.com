@@ -107,6 +107,15 @@ class RecipeController {
     }
   }
 
+  async getTagsIngredientsFull(req, res, next) {
+    try {
+      const tagsIngredientsFull = await recipeServices.getTagsIngredientsFull();
+      return res.json(tagsIngredientsFull);
+    } catch (e) {
+      return next(ApiError.InternalServerError("Can't get TagsIngredientsFull"));
+    }
+  }
+
   async deleteIngredient(req, res, next) {
     try {
       const { ingredientId } = req.params;
